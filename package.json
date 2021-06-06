@@ -1,0 +1,22 @@
+{
+    "name": "react-cli",
+    "version": "1.0.0",
+    "description": "react脚手架",
+    "main": "./index.js",
+    "scripts": {
+        "test": "jest"
+    },
+    "keywords": [
+        "react",
+        "脚手架"
+    ],
+    "author": "kennys_wang",
+    "license": "ISC",
+    "bin": {
+        "react-cli": "./index.js"
+    },
+    "dependencies": {
+        "commander": "^7.2.0",
+        "inquirer": "^8.1.0"
+    }
+}
