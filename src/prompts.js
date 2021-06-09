@@ -22,12 +22,12 @@ async function getProjectInformation() {
                     }, 10);
                 }
             },
-            {
-                type: 'rawlist',
-                name: 'lang',
-                message: '请选择开发语言',
-                choices: LANG_LIST
-            }
+            // {
+            //     type: 'rawlist',
+            //     name: 'lang',
+            //     message: '请选择开发语言',
+            //     choices: LANG_LIST
+            // }
         ]);
     } catch (e) {
         return Promise.reject(e);

@@ -1,6 +1,6 @@
 {
-    "name": "react-cli",
-    "version": "1.0.0",
+    "name": "setup-react-env",
+    "version": "0.2.1",
     "description": "react脚手架",
     "main": "./index.js",
     "scripts": {
@@ -13,7 +13,7 @@
     "author": "kennys_wang",
     "license": "ISC",
     "bin": {
-        "react-cli": "./index.js"
+        "setup-react-env": "./index.js"
     },
     "dependencies": {
         "commander": "^7.2.0",
