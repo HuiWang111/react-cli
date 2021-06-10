@@ -1,7 +1,7 @@
 const fs = require('fs');
 
-function updatePackageJson(project) {
-    const filename = project + '/package.json';
+function updateProjectPackageJson(project) {
+    const filename = process.cwd() + '/' + project + '/package.json';
 
     if (fs.existsSync(filename)) {
         const content = fs.readFileSync(filename).toString();
@@ -15,5 +15,5 @@ function updatePackageJson(project) {
 }
 
 module.exports = {
-    updatePackageJson
+    updateProjectPackageJson
 }

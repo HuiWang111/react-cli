@@ -9,17 +9,10 @@ async function getProjectInformation() {
                 message: '请输入项目名称：',
                 name: 'project',
                 validate: function(input) {
-                    const done = this.async();
-
-                    setTimeout(() => {
-                        const content = input.trim();
-
-                        if (!content) {
-                            done('please input project name');
-                        }
-
-                        done(null, true);
-                    }, 10);
+                    if (input && input.trim().length) {
+                        return true;
+                    }
+                    return 'please input project name';
                 }
             },
             // {
