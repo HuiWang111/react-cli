@@ -1,11 +1,11 @@
-const LANG = {
-    js: 'javascript',
-    ts: 'typescript'
-};
+const StateManagement = ['Redux', 'Mobx'];
 
-const LANG_LIST = ['javascript', 'typescript'];
+const StateManagementMapBranch = {
+    Redux: 'redux',
+    Mobx: 'mobx'
+};
 
 module.exports = {
-    LANG,
-    LANG_LIST
-};
+    StateManagement,
+    StateManagementMapBranch
+}

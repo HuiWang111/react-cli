@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const { LANG_LIST } = require('./constant');
+const { StateManagement } = require('./constant');
 
 async function getProjectInformation() {
     try {
@@ -8,19 +8,19 @@ async function getProjectInformation() {
                 type: 'input',
                 message: '请输入项目名称：',
                 name: 'project',
-                validate: function(input) {
+                validate: function (input) {
                     if (input && input.trim().length) {
                         return true;
                     }
                     return 'please input project name';
                 }
             },
-            // {
-            //     type: 'rawlist',
-            //     name: 'lang',
-            //     message: '请选择开发语言',
-            //     choices: LANG_LIST
-            // }
+            {
+                type: 'list',
+                name: 'stateManagement',
+                message: '请选择状态管理器',
+                choices: StateManagement
+            }
         ]);
     } catch (e) {
         return Promise.reject(e);

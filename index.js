@@ -13,6 +13,7 @@ const fs = require('fs')
 const versionChecker = require('./src/versionChecker')
 const pkg = require('./package.json')
 const execa = require('execa')
+const { StateManagementMapBranch } = require('./src/constant')
 
 const program = new Command();
 
@@ -39,13 +40,14 @@ if (options.version) {
 async function init() {
     const loading = ora('download repo');
     try {
-        const { project, lang } = await getProjectInformation();
+        const { project, stateManagement } = await getProjectInformation();
         const projectPath = process.cwd() + '/' + project;
+        const branch = StateManagementMapBranch[stateManagement];
 
         loading.text = '创建项目中...';
         loading.color = 'green';
         loading.start();
-        await downloadRepo('HuiWang111/react-ts-templete#main', projectPath);
+        await downloadRepo(`HuiWang111/react-ts-templete#bizfocus/${branch}`, projectPath);
         loading.stop();
         console.info('项目创建成功！');
 
