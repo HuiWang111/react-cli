@@ -1,17 +1,18 @@
 const chalk = require('chalk');
+const axios = require('axios');
 
 const getRemoteVersion = async (pkg) => {
     let res
     try {
-      res = await fetch(`http://registry.npmjs.org/${pkg}/latest`).then(result => result.json())
+      res = await axios.get(`http://registry.npmjs.org/${pkg}/latest`);
     } catch (e) {
       return
     }
-    return res.version
+    return res.data.version
 }
 
 const versionToNumber = (version) => {
-    return Number(version.replace(/\./g, ''))
+    return Number(version.replace(/\./g, ''));
 }
 
 const versionChecker = async (pkg, localVersion) => {
