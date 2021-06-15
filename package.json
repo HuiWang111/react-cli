@@ -1,8 +1,13 @@
 {
     "name": "setup-react-env",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "description": "react脚手架",
     "main": "./index.js",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:HuiWang111/setup-react-env.git"
+    },
+    "homepage": "https://github.com/HuiWang111/setup-react-env",
     "scripts": {
         "test": "node ./index.js -i"
     },
@@ -16,6 +21,7 @@
         "setup-react-env": "./index.js"
     },
     "dependencies": {
+        "axios": "^0.21.1",
         "chalk": "^4.1.1",
         "clear": "^0.1.0",
         "commander": "^7.2.0",
