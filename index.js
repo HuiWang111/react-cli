@@ -63,14 +63,15 @@ async function init() {
             cwd: projectPath,
             stdio: [2, 2, 2]
         });
-        await execa('npm', ['run', 'dll'], {
-            cwd: projectPath,
-            stdio: [2, 2, 2]
-        });
+        // TODO: fix run dll报错
+        // await execa('npm', ['run', 'dll'], {
+        //     cwd: projectPath,
+        //     stdio: [2, 2, 2]
+        // });
         console.info('依赖安装完成！');
         console.info('')
         console.info('---------------------------------------')
-        console.info(`运行 cd ${project} && npm start 启动项目`)
+        console.info(`运行 cd ${project} && npm run dll && npm start 启动项目`)
         console.info('---------------------------------------')
 
         // 检查版本是否有更新
