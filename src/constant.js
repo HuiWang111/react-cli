@@ -1,11 +1,6 @@
-const StateManagement = ['Redux', 'Mobx'];
+export const StateManagement = ['Redux', 'Mobx'];
 
-const StateManagementMapBranch = {
+export const StateManagementMapBranch = {
     Redux: 'redux',
     Mobx: 'mobx'
 };
-
-module.exports = {
-    StateManagement,
-    StateManagementMapBranch
-}

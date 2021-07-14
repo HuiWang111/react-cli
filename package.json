@@ -3,13 +3,15 @@
     "version": "0.4.1",
     "description": "react脚手架",
     "main": "./index.js",
+    "type": "module",
     "repository": {
         "type": "git",
         "url": "git@github.com:HuiWang111/setup-react-env.git"
     },
     "homepage": "https://github.com/HuiWang111/setup-react-env",
     "scripts": {
-        "test": "node ./index.js -i"
+        "test": "node --experimental-json-modules ./index.js -i",
+        "clear": "rm -rf react-demo"
     },
     "keywords": [
         "react",
