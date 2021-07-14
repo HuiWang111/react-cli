@@ -1,6 +1,6 @@
-const fs = require('fs');
+import fs from 'fs';
 
-function updateProjectPackageJson(project) {
+export function updateProjectPackageJson(project) {
     const filename = process.cwd() + '/' + project + '/package.json';
 
     if (fs.existsSync(filename)) {
@@ -12,8 +12,4 @@ function updateProjectPackageJson(project) {
         };
         fs.writeFileSync(filename, JSON.stringify(newData, null, '\t'));
     }
-}
-
-module.exports = {
-    updateProjectPackageJson
 }

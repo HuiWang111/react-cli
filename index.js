@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 
-const { Command } = require('commander');
-const package = require('./package.json');
-const { getProjectInformation } = require('./src/prompts');
-const { downloadRepo } = require('./src/download');
-const ora = require('ora');
-const { updateProjectPackageJson } = require('./src/updatePackageJson');
-const clear = require('clear');
-const chalk = require('chalk');
-const figlet = require('figlet')
-const fs = require('fs')
-const versionChecker = require('./src/versionChecker')
-const pkg = require('./package.json')
-const execa = require('execa')
-const { StateManagementMapBranch } = require('./src/constant')
+import { Command } from 'commander';
+import { getProjectInformation } from './src/prompts.js';
+import { downloadRepo } from './src/download.js';
+import ora from 'ora';
+import { updateProjectPackageJson } from './src/updatePackageJson.js';
+import clear from 'clear';
+import chalk from 'chalk';
+import figlet from 'figlet';
+import fs from 'fs';
+import path from 'path';
+import { versionChecker } from './src/versionChecker.js';
+import pkg from './package.json';
+import execa from 'execa';
+import { StateManagementMapBranch } from './src/constant.js';
 
 const program = new Command();
 
@@ -25,7 +25,7 @@ program
 const options = program.opts();
 
 if (options.version) {
-    console.info(package.version);
+    printVersion();
 } else if (options.init) {
     clear()
     console.info(
@@ -41,7 +41,7 @@ async function init() {
     const loading = ora('download repo');
     try {
         const { project, stateManagement } = await getProjectInformation();
-        const projectPath = process.cwd() + '/' + project;
+        const projectPath = path.join(process.cwd(), project);
         const branch = StateManagementMapBranch[stateManagement];
 
         loading.text = '创建项目中...';
@@ -63,14 +63,15 @@ async function init() {
             cwd: projectPath,
             stdio: [2, 2, 2]
         });
-        await execa('npm', ['run', 'dll'], {
-            cwd: projectPath,
-            stdio: [2, 2, 2]
-        });
+        // TODO: fix run dll报错
+        // await execa('npm', ['run', 'dll'], {
+        //     cwd: projectPath,
+        //     stdio: [2, 2, 2]
+        // });
         console.info('依赖安装完成！');
         console.info('')
         console.info('---------------------------------------')
-        console.info(`运行 cd ${project} && npm start 启动项目`)
+        console.info(`运行 cd ${project} && npm run dll && npm start 启动项目`)
         console.info('---------------------------------------')
 
         // 检查版本是否有更新
@@ -79,5 +80,10 @@ async function init() {
         loading.stop();
         console.error(e);
     }
+}
+
+function printVersion() {
+    console.info(pkg.version);
+    versionChecker(pkg.name, pkg.version);
 }
 

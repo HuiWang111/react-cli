@@ -1,6 +1,6 @@
-const download = require('download-git-repo');
+import download from 'download-git-repo';
 
-function downloadRepo(repo, path) {
+export function downloadRepo(repo, path) {
     return new Promise((resolve, reject) => {
         download(repo, path, (error) => {
             if (error) {
@@ -11,7 +11,3 @@ function downloadRepo(repo, path) {
         });
     });
 }
-
-module.exports = {
-    downloadRepo
-};

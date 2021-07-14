@@ -1,5 +1,5 @@
-const chalk = require('chalk');
-const axios = require('axios');
+import chalk from 'chalk';
+import axios from 'axios';
 
 const getRemoteVersion = async (pkg) => {
     let res
@@ -8,14 +8,14 @@ const getRemoteVersion = async (pkg) => {
     } catch (e) {
       return
     }
-    return res.data.version
+    return res.data.version;
 }
 
 const versionToNumber = (version) => {
     return Number(version.replace(/\./g, ''));
 }
 
-const versionChecker = async (pkg, localVersion) => {
+export const versionChecker = async (pkg, localVersion) => {
     const remoteVersion = await getRemoteVersion(pkg);
 
     if (!remoteVersion) return;
@@ -28,5 +28,3 @@ const versionChecker = async (pkg, localVersion) => {
         console.info('')
     }
 }
-
-module.exports = versionChecker

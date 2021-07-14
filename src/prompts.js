@@ -1,7 +1,7 @@
-const inquirer = require('inquirer');
-const { StateManagement } = require('./constant');
+import inquirer from 'inquirer';
+import { StateManagement } from './constant.js';
 
-async function getProjectInformation() {
+export async function getProjectInformation() {
     try {
         return await inquirer.prompt([
             {
@@ -26,7 +26,3 @@ async function getProjectInformation() {
         return Promise.reject(e);
     }
 }
-
-module.exports = {
-    getProjectInformation
-};
