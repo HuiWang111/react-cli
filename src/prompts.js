@@ -1,5 +1,5 @@
 import inquirer from 'inquirer';
-import { StateManagement } from './constant.js';
+import { StateManagement, Envs } from './constant.js';
 
 export async function getProjectInformation() {
     try {
@@ -14,6 +14,12 @@ export async function getProjectInformation() {
                     }
                     return 'please input project name';
                 }
+            },
+            {
+                type: 'list',
+                name: 'env',
+                message: '请选择开发环境',
+                choices: Envs
             },
             {
                 type: 'list',
