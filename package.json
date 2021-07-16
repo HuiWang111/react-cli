@@ -11,7 +11,7 @@
     "homepage": "https://github.com/HuiWang111/setup-react-env",
     "scripts": {
         "test": "node --experimental-json-modules ./index.js -i",
-        "clear": "rm -rf RNTemplete"
+        "clear": "rm -rf RNDemo"
     },
     "keywords": [
         "react",

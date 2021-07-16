@@ -63,7 +63,7 @@ export const createNativeProject = async (
         loading.stop();
         console.info('project initialized');
 
-        rimrafSync(path.join(process.cwd(), 'RNTemplete'));
+        rimrafSync(path.join(process.cwd(), '../RNTemplete'));
     } catch (e) {
         loading.stop();
         console.error(e);
