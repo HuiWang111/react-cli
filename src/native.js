@@ -2,7 +2,7 @@ import execa from 'execa';
 import fs from 'fs';
 import path from 'path';
 import { NativeSourcePath, NativeSourceSrcPath } from './constant.js';
-import { rimrafSync } from './rimraf.js';
+import { rimrafSync } from './rimrafSync.js';
 import { downloadRepo } from './download.js';
 
 export const createNativeProject = async (
