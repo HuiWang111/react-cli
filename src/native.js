@@ -2,6 +2,8 @@ import execa from 'execa';
 import fs from 'fs';
 import path from 'path';
 import { NativeSourcePath, NativeSourceSrcPath } from './constant.js';
+import { rimrafSync } from './rimraf.js';
+import { downloadRepo } from './download.js';
 
 export const createNativeProject = async (
     loading,
@@ -9,18 +11,19 @@ export const createNativeProject = async (
     projectPath
 ) => {
     try {
-        loading.text = `react-native init ${project}...`;
-        loading.color = 'green';
+        loading.text = 'downloading templete...';
         loading.start();
-        await execa(`npx react-native init ${project} --template react-native-template-typescript`);
-        loading.stop();
-        console.info(`react-native init ${project} complete`);
+        await downloadRepo('HuiWang111/RNTemplete#main', path.join(process.cwd(), '../RNTemplete'));
 
-        console.info('开始安装依赖');
+        loading.text = `react-native init ${project}...`;
+        await execa(`npx react-native init ${project} --template react-native-template-typescript`);
+
+        loading.text = 'installing dependencies...';
         await execa(
             'npm',
             [
-                'i', 'axios', 'mobx', 'mobx-react-lite', 'moment', 'react-native-elements', 'rn-element', 'react-router-native'
+                'i', 'axios', 'mobx', 'mobx-react-lite', 'moment', 'react-native-elements', 'rn-element', 'react-router-native',
+                'react-native-safe-area-context', '@react-native-async-storage/async-storage'
             ],
             {
                 cwd: projectPath,
@@ -29,22 +32,28 @@ export const createNativeProject = async (
         );
         await execa(
             'npm',
-            ['i', '@types/react', 'babel-plugin-module-resolver', '@types/react-router-native', '--save-dev'],
+            [
+                'i',
+                '@types/react',
+                '@types/react-router-native',
+                '@babel/plugin-proposal-decorators',
+                'eslint-plugin-spellcheck',
+                '--save-dev'
+            ],
             {
                 cwd: projectPath,
                 stdio: [2, 2, 2]
             }
         );
-        console.info('依赖安装完成！');
         
-        console.info('开始整理项目结构');
-        fs.rmSync(path.join(projectPath, '__tests__/App-test.tsx'));
-        fs.rmdirSync(path.join(projectPath, '__tests__'));
+        // fs.rmSync(path.join(projectPath, '__tests__/App-test.tsx'));
+        // fs.rmdirSync(path.join(projectPath, '__tests__'));
+        rimrafSync(path.join(projectPath, '__tests__'));
         fs.unlinkSync(path.join(projectPath, 'App.tsx'));
         writeFile('.eslintrc.js', fs.readFileSync(path.join(process.cwd(), NativeSourcePath, '.eslintrc.js')));
         writeFile('.eslintignore', fs.readFileSync(path.join(process.cwd(), NativeSourcePath, '.eslintignore')));
-        // babel.config
-        // tsconfig
+        writeFile('babel.config.js', fs.readFileSync(path.join(process.cwd(), NativeSourcePath, 'babel.config.js')));
+        writeFile('tsconfig.json', fs.readFileSync(path.join(process.cwd(), NativeSourcePath, 'tsconfig.json')));
 
         const src = path.join(process.cwd(), NativeSourceSrcPath);
         const dir = path.join(projectPath, 'src');
@@ -53,7 +62,10 @@ export const createNativeProject = async (
         }
         copy(fs.readdirSync(src));
         
-        console.info('项目结构整理完成');
+        loading.stop();
+        console.info('project initialized');
+
+        rimrafSync(path.join(process.cwd(), 'RNTemplete'));
     } catch (e) {
         loading.stop();
         console.error(e);
