@@ -17,8 +17,8 @@ export const createNativeProject = async (
 
         loading.text = `react-native init ${project}...`;
         await execa(`npx react-native init ${project} --template react-native-template-typescript`);
+        loading.stop();
 
-        loading.text = 'installing dependencies...';
         await execa(
             'npm',
             [
@@ -46,8 +46,6 @@ export const createNativeProject = async (
             }
         );
         
-        // fs.rmSync(path.join(projectPath, '__tests__/App-test.tsx'));
-        // fs.rmdirSync(path.join(projectPath, '__tests__'));
         rimrafSync(path.join(projectPath, '__tests__'));
         fs.unlinkSync(path.join(projectPath, 'App.tsx'));
         writeFile('.eslintrc.js', fs.readFileSync(path.join(process.cwd(), NativeSourcePath, '.eslintrc.js')));

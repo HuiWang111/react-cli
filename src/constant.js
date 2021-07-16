@@ -1,6 +1,6 @@
 export const StateManagement = [
-    'Redux',
-    // 'Mobx'
+    // 'Redux',
+    'Mobx'
 ];
 
 export const StateManagementMapBranch = {
@@ -10,6 +10,6 @@ export const StateManagementMapBranch = {
 
 export const Envs = ['React-DOM', 'React-Native'];
 
-export const NativeSourcePath = '../react-ts-templete';
+export const NativeSourcePath = '../RNTemplete';
 
 export const NativeSourceSrcPath = `${NativeSourcePath}/src`;
