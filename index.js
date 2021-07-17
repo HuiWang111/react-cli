@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --experimental-json-modules
 
 import { Command } from 'commander';
 import { getProjectInformation } from './src/prompts.js';

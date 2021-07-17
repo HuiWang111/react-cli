@@ -22,8 +22,16 @@ export const createNativeProject = async (
         await execa(
             'npm',
             [
-                'i', 'axios', 'mobx', 'mobx-react-lite', 'moment', 'react-native-elements', 'rn-element', 'react-router-native',
-                'react-native-safe-area-context', '@react-native-async-storage/async-storage'
+                'i',
+                'axios',
+                'mobx',
+                'mobx-react-lite',
+                'moment',
+                'react-native-elements',
+                'rn-element',
+                'react-router-native',
+                'react-native-safe-area-context',
+                '@react-native-async-storage/async-storage'
             ],
             {
                 cwd: projectPath,
@@ -45,7 +53,7 @@ export const createNativeProject = async (
                 stdio: [2, 2, 2]
             }
         );
-        
+
         rimrafSync(path.join(projectPath, '__tests__'));
         fs.unlinkSync(path.join(projectPath, 'App.tsx'));
         writeFile('.eslintrc.js', fs.readFileSync(path.join(process.cwd(), NativeSourcePath, '.eslintrc.js')));
@@ -59,7 +67,7 @@ export const createNativeProject = async (
             fs.mkdirSync(dir);
         }
         copy(fs.readdirSync(src));
-        
+
         loading.stop();
         console.info('project initialized');
 

@@ -6,25 +6,25 @@ export async function getProjectInformation() {
         return await inquirer.prompt([
             {
                 type: 'input',
-                message: '请输入项目名称：',
+                message: 'please input project name',
                 name: 'project',
                 validate: function (input) {
                     if (input && input.trim().length) {
                         return true;
                     }
-                    return 'please input project name';
+                    return 'project name is required !';
                 }
             },
             {
                 type: 'list',
                 name: 'env',
-                message: '请选择开发环境',
+                message: 'select platform',
                 choices: Envs
             },
             {
                 type: 'list',
                 name: 'stateManagement',
-                message: '请选择状态管理器',
+                message: 'select state management',
                 choices: StateManagement
             }
         ]);
