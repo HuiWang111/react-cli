@@ -11,7 +11,7 @@
     "homepage": "https://github.com/HuiWang111/setup-react-env",
     "scripts": {
         "test": "node --experimental-json-modules ./index.js -i",
-        "clear": "rm -rf react-demo"
+        "clear": "rm -rf RNDemo"
     },
     "keywords": [
         "react",
@@ -31,6 +31,8 @@
         "execa": "^5.1.1",
         "figlet": "^1.5.0",
         "inquirer": "^8.1.0",
-        "ora": "^5.4.0"
-    }
+        "ora": "^5.4.0",
+        "rimraf": "^3.0.2"
+    },
+    "devDependencies": {}
 }
