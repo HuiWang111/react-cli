@@ -18,7 +18,7 @@ export const createNativeProject = async (
         loading.text = `react-native init ${project}...`;
         await execa(`npx react-native init ${project} --template react-native-template-typescript`);
         loading.stop();
-
+        
         await execa(
             'npm',
             [
@@ -60,6 +60,7 @@ export const createNativeProject = async (
         writeFile('.eslintignore', fs.readFileSync(path.join(process.cwd(), NativeSourcePath, '.eslintignore')));
         writeFile('babel.config.js', fs.readFileSync(path.join(process.cwd(), NativeSourcePath, 'babel.config.js')));
         writeFile('tsconfig.json', fs.readFileSync(path.join(process.cwd(), NativeSourcePath, 'tsconfig.json')));
+        writeFile('index.js', fs.readFileSync(path.join(process.cwd(), NativeSourcePath, 'index.js')));
 
         const src = path.join(process.cwd(), NativeSourceSrcPath);
         const dir = path.join(projectPath, 'src');
