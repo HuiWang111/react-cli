@@ -13,7 +13,7 @@ export const createNativeProject = async (
     try {
         loading.text = 'downloading templete...';
         loading.start();
-        await downloadRepo('HuiWang111/RNTemplete#main', path.join(process.cwd(), '../RNTemplete'));
+        await downloadRepo('HuiWang111/RNTemplete#main', path.join(process.cwd(), NativeSourcePath));
 
         loading.text = `react-native init ${project}...`;
         await execa(`npx react-native init ${project} --template react-native-template-typescript`);
@@ -71,7 +71,7 @@ export const createNativeProject = async (
         loading.stop();
         console.info('project initialized');
 
-        rimrafSync(path.join(process.cwd(), '../RNTemplete'));
+        rimrafSync(path.join(process.cwd(), NativeSourcePath));
     } catch (e) {
         loading.stop();
         console.error(e);

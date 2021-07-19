@@ -10,6 +10,6 @@ export const StateManagementMapBranch = {
 
 export const Envs = ['React-DOM', 'React-Native'];
 
-export const NativeSourcePath = '../RNTemplete';
+export const NativeSourcePath = './RNTemplete';
 
 export const NativeSourceSrcPath = `${NativeSourcePath}/src`;
