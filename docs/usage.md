@@ -67,6 +67,11 @@ setup-react-env -v
 - toJS
 - slice
 
+### 为何使用mobx 而不是redux？
+- mobx简单易懂，与vue的状态管理思想很相近
+- 虽然redux更符合react函数式编程的思想，但我认为数据管理使用面向对象(mobx更适合面向对象)的思想去写更好(组件当然使用函数式编程更好)
+- mobx性能不会比redux差，而且mobx更简单(redux需要理解 `action/reducer/saga/middleware/slice/store/immutable/thunk` 等概念)
+
 ### react-demo 与 react-native 模板的差异点
 - react-native中的 `AsyncStorage` 模块的 `setItem` | `getItem` | `removeItem` 操作都是异步的
 
