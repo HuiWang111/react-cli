@@ -46,7 +46,7 @@ setup-react-env -v
 - `interface` 与 `type`
 - [type-challenges](https://github.com/type-challenges/type-challenges/blob/master/README.zh-CN.md)
 
-### react
+### react的介绍
 - react hook
     - 关注点分离
 - react 17的变化
@@ -56,6 +56,16 @@ setup-react-env -v
     import { useState, useEffect } from 'react'
     ```
 - [react-preview](https://reactpreview.com/usage) vscode插件介绍
+
+### mobx & mobx-react-lite的介绍
+- observable
+    - observable.map
+    - observable.set
+    - observable.shallow
+- observer
+- computed
+- toJS
+- slice
 
 ### react-demo 与 react-native 模板的差异点
 - react-native中的 `AsyncStorage` 模块的 `setItem` | `getItem` | `removeItem` 操作都是异步的
