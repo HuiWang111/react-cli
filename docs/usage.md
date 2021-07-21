@@ -72,6 +72,13 @@ setup-react-env -v
 - 虽然redux更符合react函数式编程的思想，但我认为数据管理使用面向对象(mobx更适合面向对象)的思想去写更好(组件当然使用函数式编程更好)
 - mobx性能不会比redux差，而且mobx更简单(redux需要理解 `action/reducer/saga/middleware/slice/store/immutable/thunk` 等概念)
 
+
+### 业务逻辑与组件的解耦
+- 业务逻辑与UI组件应该完全解耦
+- 业务逻辑与容器组件应该松散耦合
+    - 业务逻辑写到store和model中
+    - 容器组件只是在调用封装好的业务逻辑函数
+
 ### react-demo 与 react-native 模板的差异点
 - react-native中的 `AsyncStorage` 模块的 `setItem` | `getItem` | `removeItem` 操作都是异步的
 
