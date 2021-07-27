@@ -25,80 +25,6 @@ setup-react-env --version
 # or
 setup-react-env -v
 ```
-
-### 模板说明
-- 状态管理选定为 `mobx`
-- `mobx` 使用介绍
-- 模板目录介绍
-- vscode eslint
-- `httpUtil` 统一错误处理介绍
-- 是否需要使用 `model` 的讨论
-
-### typescript介绍
-- 泛型介绍
-    - 类型共性的提取
-    ```ts
-    const array: Array<string> = ['a', 'b'];
-    ```
-    - 定义一个复杂类型的时候，其中一部分无法确定是什么类型（需要在具体场景下确定），如果写any的话就无法进行类型约束，这个时候就需要用到泛型
-    - 类似于函数传参
-
-- 类型窄化介绍
-    - is [示例](https://github.com/HuiWang111/utils/blob/master/src/validate.ts)
-    - as
-    ```ts
-    const age: string | number = 18;
-
-    const printAge = (age: number) => {
-        console.log(age);
-    }
-
-    printAge(age as number);
-    ```
-    - typeof
-    ```ts
-    let some: string | number;
-
-    if (typeof some === 'string') {
-        some.toUpperCase();
-    } else if (typeof some === 'number') {
-        some.toFixed(2);
-    }
-    ```
-    - 真值窄化
-    ```ts
-    let some: string | undefined;
-
-    if (some) {
-        some.toUpperCase();
-    }
-    ```
-    - a.b?.c
-    ```ts
-    interface A {
-        b?: {
-            c: 1
-        }
-    }
-
-    const a: A = {};
-
-    console.log(a.b.c) // error
-    console.log(a.b?.c) // a.b && a.b.c
-    ```
-    - a.b! + 1
-    ```ts
-    interface A {
-        b?: number;
-    }
-
-    const a: A = { b: 1 };
-
-    console.log(a.b + 1) // error
-    console.log(a.b! + 1)
-    ```
-- [type-challenges](https://github.com/type-challenges/type-challenges/blob/master/README.zh-CN.md)
-
 ### react的介绍
 - react 与 vue
     - 插值表达式 {{ name }}
@@ -246,6 +172,80 @@ setup-react-env -v
     import { useState, useEffect } from 'react';
     ```
 - [react-preview](https://reactpreview.com/usage) vscode插件介绍
+
+### typescript介绍
+- 泛型介绍
+    - 类型共性的提取
+    ```ts
+    const array: Array<string> = ['a', 'b'];
+    ```
+    - 定义一个复杂类型的时候，其中一部分无法确定是什么类型（需要在具体场景下确定），如果写any的话就无法进行类型约束，这个时候就需要用到泛型
+    - 类似于函数传参
+
+- 类型窄化介绍
+    - is [示例](https://github.com/HuiWang111/utils/blob/master/src/validate.ts)
+    - as
+    ```ts
+    const age: string | number = 18;
+
+    const printAge = (age: number) => {
+        console.log(age);
+    }
+
+    printAge(age as number);
+    ```
+    - typeof
+    ```ts
+    let some: string | number;
+
+    if (typeof some === 'string') {
+        some.toUpperCase();
+    } else if (typeof some === 'number') {
+        some.toFixed(2);
+    }
+    ```
+    - 真值窄化
+    ```ts
+    let some: string | undefined;
+
+    if (some) {
+        some.toUpperCase();
+    }
+    ```
+    - a.b?.c
+    ```ts
+    interface A {
+        b?: {
+            c: 1
+        }
+    }
+
+    const a: A = {};
+
+    console.log(a.b.c) // error
+    console.log(a.b?.c) // a.b && a.b.c
+    ```
+    - a.b! + 1
+    ```ts
+    interface A {
+        b?: number;
+    }
+
+    const a: A = { b: 1 };
+
+    console.log(a.b + 1) // error
+    console.log(a.b! + 1)
+    ```
+- [type-challenges](https://github.com/type-challenges/type-challenges/blob/master/README.zh-CN.md)
+
+### 模板说明
+- 状态管理选定为 `mobx`
+- `mobx` 使用介绍
+- 模板目录介绍
+- vscode eslint
+- `httpUtil` 统一错误处理介绍
+- 是否需要使用 `model` 的讨论
+
 
 ### mobx & mobx-react-lite的介绍
 - observable
