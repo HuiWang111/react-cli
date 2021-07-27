@@ -173,6 +173,12 @@ setup-react-env -v
     ```
 - [react-preview](https://reactpreview.com/usage) vscode插件介绍
 
+### react相关文档
+- [官方中文文档](https://react.docschina.org/)
+- [React Router 使用教程](https://www.ruanyifeng.com/blog/2016/05/react_router.html)
+- [React 技术栈系列教程](https://www.ruanyifeng.com/blog/2016/09/react-technology-stack.html)
+- [React 入门实例教程](https://blog.csdn.net/u014388408/article/details/50595047)
+
 ### typescript介绍
 - 泛型介绍
     - 类型共性的提取
