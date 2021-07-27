@@ -100,13 +100,148 @@ setup-react-env -v
 - [type-challenges](https://github.com/type-challenges/type-challenges/blob/master/README.zh-CN.md)
 
 ### react的介绍
-- react hook
-    - 关注点分离
+- react 与 vue
+    - 插值表达式 {{ name }}
+    ```jsx
+    <div>{ name }</div>
+    ```
+    - data: { isActive: true }
+    ```js
+    const [isActive, setIsActive] = useState(false);
+    ```
+    - Vue.component
+    在react中，使用组件不需要注册，只需要导出、导入即可
+    ```js
+    // Component.js
+    export const Component = () => {
+        return (
+            <div>
+                // ...
+            </div>
+        );
+    }
+    ```
+    ```js
+    // Page.js
+    import { Component } from './Component';
+
+    const Page = () => {
+        return (
+            <Component></Component>
+        );
+    }
+    ```
+    - 事件
+    ```jsx
+    // vue
+    <div @click="handleClick"></div>
+    ```
+    ```jsx
+    // react
+    // !!! 注意，vue中看着是字符串的有可能是表达式；而在react中不存在这种情况，字符串和表达式是严格区分的
+    // { name } 是表达式， "name" 是字符串；使用模板字符串需要这样 {`hello, ${name}`}
+    <div onClick={handleClick}></div>
+    ```
+    - v-html
+    ```jsx
+    const html = '<span></span>';
+    <div dangerouslySetInnerHTML={{ __html: html }}></div>
+    ```
+    - 声明周期
+    ```js
+    import { useEffect } from 'react';
+
+    useEffect(() => {
+        // 每一次渲染都会执行这个回调
+
+    });
+
+    useEffect(() => {
+        // mounted回调
+
+        return () => {
+            // beforeDestroy回调
+
+        }
+    }, []);
+
+    useEffect(() => {
+        // 该回调第一次会执行以及somevar有变化的时候也会执行
+
+    }, [somevar]);
+    ```
+    - 组件传值方法
+        - props传递
+        ```jsx
+        const Child = ({ name }) => {
+            console.log(name); // name
+        };
+        const Parent = () => {
+            return (
+                <Child name='name'>
+            );
+        }
+        ```
+        - context传递
+        ```js
+        import { createContext, useContext } from 'react';
+
+        const NameContext = createContext({
+            name: 'name'
+        });
+
+        const { name } = useContext(NameContext);
+        ```
+        - 状态管理 `mobx` `redux`
+        - 发布订阅模式
+            类似于 `vue` 的 vm.$emit，但是react中不提供这样的api，需要自己写自定义事件的监听和触发，一般不建议使用
+        - slot
+        ```jsx
+        // jsx中没有slot改变，类似的事children
+        const Comp = ({ children }) => {
+            return (
+                <div>
+                    { children } // <a></a>
+                </div>
+            )
+        };
+
+        const Demo = () => {
+            return (
+                <Comp>
+                    <a></a>
+                </Comp>
+            );
+        }
+        ```
+    - 条件渲染 v-if
+    ```jsx
+    condition && <div></div>
+
+    condition ? <div></div> : null
+    ```
+    - 列表渲染
+    ```jsx
+    list.map(item => {
+        return <div key={item.id}></div>
+    })
+    ```
+    - v-model
+    ```jsx
+    // react中默认不实现双向绑定
+    const [value, setValue] = useState('1');
+
+    const handleChange = (value) => {
+        setValue(value);
+    }
+
+    <input value={value} onChange={handleChange} />
+    ```
 - react 17的变化
     - react17以前jsx被编译为React.createElement，因此需要在每个文件显式引入react。
     - react17不再需要显式引入react，使用react其他api只需要如下引入方式
     ```js
-    import { useState, useEffect } from 'react'
+    import { useState, useEffect } from 'react';
     ```
 - [react-preview](https://reactpreview.com/usage) vscode插件介绍
 
