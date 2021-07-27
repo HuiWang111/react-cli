@@ -36,14 +36,67 @@ setup-react-env -v
 
 ### typescript介绍
 - 泛型介绍
+    - 类型共性的提取
+    ```ts
+    const array: Array<string> = ['a', 'b'];
+    ```
+    - 定义一个复杂类型的时候，其中一部分无法确定是什么类型（需要在具体场景下确定），如果写any的话就无法进行类型约束，这个时候就需要用到泛型
+    - 类似于函数传参
+
 - 类型窄化介绍
-    - is
+    - is [示例](https://github.com/HuiWang111/utils/blob/master/src/validate.ts)
     - as
+    ```ts
+    const age: string | number = 18;
+
+    const printAge = (age: number) => {
+        console.log(age);
+    }
+
+    printAge(age as number);
+    ```
     - typeof
+    ```ts
+    let some: string | number;
+
+    if (typeof some === 'string') {
+        some.toUpperCase();
+    } else if (typeof some === 'number') {
+        some.toFixed(2);
+    }
+    ```
     - 真值窄化
-    - a?.b + 1
+    ```ts
+    let some: string | undefined;
+
+    if (some) {
+        some.toUpperCase();
+    }
+    ```
+    - a.b?.c
+    ```ts
+    interface A {
+        b?: {
+            c: 1
+        }
+    }
+
+    const a: A = {};
+
+    console.log(a.b.c) // error
+    console.log(a.b?.c) // a.b && a.b.c
+    ```
     - a.b! + 1
-- `interface` 与 `type`
+    ```ts
+    interface A {
+        b?: number;
+    }
+
+    const a: A = { b: 1 };
+
+    console.log(a.b + 1) // error
+    console.log(a.b! + 1)
+    ```
 - [type-challenges](https://github.com/type-challenges/type-challenges/blob/master/README.zh-CN.md)
 
 ### react的介绍
