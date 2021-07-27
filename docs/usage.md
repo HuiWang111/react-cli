@@ -147,7 +147,7 @@ setup-react-env -v
     const html = '<span></span>';
     <div dangerouslySetInnerHTML={{ __html: html }}></div>
     ```
-    - 声明周期
+    - 生命周期
     ```js
     import { useEffect } from 'react';
 
@@ -195,38 +195,38 @@ setup-react-env -v
         - 状态管理 `mobx` `redux`
         - 发布订阅模式
             类似于 `vue` 的 vm.$emit，但是react中不提供这样的api，需要自己写自定义事件的监听和触发，一般不建议使用
-        - slot
-        ```jsx
-        // jsx中没有slot改变，类似的事children
-        const Comp = ({ children }) => {
-            return (
-                <div>
-                    { children } // <a></a>
-                </div>
-            )
-        };
+    - slot
+    ```jsx
+    // jsx中没有slot改变，类似的事children
+    const Comp = ({ children }) => {
+        return (
+            <div>
+                { children } // <a></a>
+            </div>
+        )
+    };
 
-        const Demo = () => {
-            return (
-                <Comp>
-                    <a></a>
-                </Comp>
-            );
-        }
-        ```
+    const Demo = () => {
+        return (
+            <Comp>
+                <a></a>
+            </Comp>
+        );
+    }
+    ```
     - 条件渲染 v-if
     ```jsx
     condition && <div></div>
 
     condition ? <div></div> : null
     ```
-    - 列表渲染
+    - 列表渲染 v-for
     ```jsx
     list.map(item => {
         return <div key={item.id}></div>
     })
     ```
-    - v-model
+    - 双向绑定 v-model
     ```jsx
     // react中默认不实现双向绑定
     const [value, setValue] = useState('1');
@@ -237,6 +237,8 @@ setup-react-env -v
 
     <input value={value} onChange={handleChange} />
     ```
+- react hook
+    - 关注点分离
 - react 17的变化
     - react17以前jsx被编译为React.createElement，因此需要在每个文件显式引入react。
     - react17不再需要显式引入react，使用react其他api只需要如下引入方式
