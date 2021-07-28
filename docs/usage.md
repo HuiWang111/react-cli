@@ -172,6 +172,7 @@ setup-react-env -v
     import { useState, useEffect } from 'react';
     ```
 - [react-preview](https://reactpreview.com/usage) vscode插件介绍
+- [vue-preview](https://marketplace.visualstudio.com/items?itemName=SimonSiefke.vue-preview)
 
 ### react相关文档
 - [官方中文文档](https://react.docschina.org/)
@@ -248,6 +249,8 @@ setup-react-env -v
 - 状态管理选定为 `mobx`
 - `mobx` 使用介绍
 - 模板目录介绍
+    - 数据流
+    - 路由
 - vscode eslint
 - `httpUtil` 统一错误处理介绍
 - 是否需要使用 `model` 的讨论
