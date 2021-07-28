@@ -50,7 +50,7 @@ setup-react-env -v
     ```js
     // Page.js
     import { Component } from './Component';
-
+    
     const Page = () => {
         return (
             <Component></Component>
@@ -76,24 +76,29 @@ setup-react-env -v
     - 生命周期
     ```js
     import { useEffect } from 'react';
-
+    
     useEffect(() => {
         // 每一次渲染都会执行这个回调
-
+    
     });
-
+    
+    // 回调本身不能是一个async函数
     useEffect(() => {
         // mounted回调
-
+        const callApi = async () => {
+            await ...
+        }
+    	callApi();
+            
         return () => {
             // beforeDestroy回调
-
+    
         }
     }, []);
-
+    
     useEffect(() => {
         // 该回调第一次会执行以及somevar有变化的时候也会执行
-
+    
     }, [somevar]);
     ```
     - 组件传值方法
@@ -111,20 +116,20 @@ setup-react-env -v
         - context传递
         ```js
         import { createContext, useContext } from 'react';
-
+        
         const NameContext = createContext({
             name: 'name'
         });
-
+        
         const { name } = useContext(NameContext);
         ```
         - 状态管理 `mobx` `redux`
         - 发布订阅模式
             类似于 `vue` 的 vm.$emit，但是react中不提供这样的api，需要自己写自定义事件的监听和触发，一般不建议使用
-
+    
     - 子组件向父组件传值（不常用也不建议使用）
         - 通过ref属性拿到子组件的实例，再调用子组件的方法获取子组件的数据
-
+    
     - slot
     ```jsx
     // jsx中没有slot改变，类似的事children
@@ -135,7 +140,7 @@ setup-react-env -v
             </div>
         )
     };
-
+    
     const Demo = () => {
         return (
             <Comp>
@@ -147,7 +152,7 @@ setup-react-env -v
     - 条件渲染 v-if
     ```jsx
     condition && <div></div>
-
+    
     condition ? <div></div> : null
     ```
     - 列表渲染 v-for
@@ -160,22 +165,28 @@ setup-react-env -v
     ```jsx
     // react中默认不实现双向绑定
     const [value, setValue] = useState('1');
-
+    
     const handleChange = (value) => {
         setValue(value);
     }
-
+    
     <input value={value} onChange={handleChange} />
     ```
+    
 - react hook
+  
+    - hook只能写在函数组件顶层作用域
     - 关注点分离
+    
 - react 17的变化
     - react17以前jsx被编译为React.createElement，因此需要在每个文件显式引入react。
     - react17不再需要显式引入react，使用react其他api只需要如下引入方式
     ```js
     import { useState, useEffect } from 'react';
     ```
+    
 - [react-preview](https://reactpreview.com/usage) vscode插件介绍
+
 - [vue-preview](https://marketplace.visualstudio.com/items?itemName=SimonSiefke.vue-preview)
 
 ### react相关文档
@@ -198,17 +209,17 @@ setup-react-env -v
     - as
     ```ts
     const age: string | number = 18;
-
+    
     const printAge = (age: number) => {
         console.log(age);
     }
-
+    
     printAge(age as number);
     ```
     - typeof
     ```ts
     let some: string | number;
-
+    
     if (typeof some === 'string') {
         some.toUpperCase();
     } else if (typeof some === 'number') {
@@ -218,7 +229,7 @@ setup-react-env -v
     - 真值窄化
     ```ts
     let some: string | undefined;
-
+    
     if (some) {
         some.toUpperCase();
     }
@@ -230,9 +241,9 @@ setup-react-env -v
             c: 1
         }
     }
-
+    
     const a: A = {};
-
+    
     console.log(a.b.c) // error
     console.log(a.b?.c) // a.b && a.b.c
     ```
@@ -241,9 +252,9 @@ setup-react-env -v
     interface A {
         b?: number;
     }
-
+    
     const a: A = { b: 1 };
-
+    
     console.log(a.b + 1) // error
     console.log(a.b! + 1)
     ```
@@ -253,6 +264,7 @@ setup-react-env -v
 - 状态管理选定为 `mobx`
 - `mobx` 使用介绍
 - 模板目录介绍
+    - views目录
     - 数据流
     - 路由
 - vscode eslint
