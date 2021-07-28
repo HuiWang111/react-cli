@@ -121,6 +121,10 @@ setup-react-env -v
         - 状态管理 `mobx` `redux`
         - 发布订阅模式
             类似于 `vue` 的 vm.$emit，但是react中不提供这样的api，需要自己写自定义事件的监听和触发，一般不建议使用
+
+    - 子组件向父组件传值（不常用也不建议使用）
+        - 通过ref属性拿到子组件的实例，再调用子组件的方法获取子组件的数据
+
     - slot
     ```jsx
     // jsx中没有slot改变，类似的事children
@@ -175,10 +179,10 @@ setup-react-env -v
 - [vue-preview](https://marketplace.visualstudio.com/items?itemName=SimonSiefke.vue-preview)
 
 ### react相关文档
-- [官方中文文档](https://react.docschina.org/)
+- [React 入门实例教程](https://blog.csdn.net/u014388408/article/details/50595047)
 - [React Router 使用教程](https://www.ruanyifeng.com/blog/2016/05/react_router.html)
 - [React 技术栈系列教程](https://www.ruanyifeng.com/blog/2016/09/react-technology-stack.html)
-- [React 入门实例教程](https://blog.csdn.net/u014388408/article/details/50595047)
+- [官方中文文档](https://react.docschina.org/)
 
 ### typescript介绍
 - 泛型介绍
@@ -269,14 +273,26 @@ setup-react-env -v
 ### 为何使用mobx 而不是redux？
 - mobx简单易懂，与vue的状态管理思想很相近
 - 虽然redux更符合react函数式编程的思想，但我认为数据管理使用面向对象(mobx更适合面向对象)的思想去写更好(组件当然使用函数式编程更好)
-- mobx性能不会比redux差，而且mobx更简单(redux需要理解 `action/reducer/saga/middleware/slice/store/immutable/thunk` 等概念)
-
+- redux需要理解 `action/reducer/saga/middleware/slice/store/immutable/thunk` 等概念，react相对vue来说本身难度就比较大，再加上redux的话就难上加难了。可以在熟悉react之后再对redux进行学习
 
 ### 业务逻辑与组件的解耦
 - 业务逻辑与UI组件应该完全解耦
 - 业务逻辑与容器组件应该松散耦合
     - 业务逻辑写到store和model中
     - 容器组件只是在调用封装好的业务逻辑函数
+```jsx
+const handleSave = async () => {
+    await someService.createUser();
+    await someService.loadUsers();
+}
+
+<Form>
+    <Form.Item></Form.Item>
+    <Form.Item></Form.Item>
+    <Form.Item></Form.Item>
+    <Button title='保存' onPress={handleSave} />
+</Form>
+```
 
 ### react-demo 与 react-native 模板的差异点
 - react-native中的 `AsyncStorage` 模块的 `setItem` | `getItem` | `removeItem` 操作都是异步的
