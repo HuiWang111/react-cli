@@ -1,6 +1,6 @@
 {
     "name": "setup-react-env",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "react脚手架",
     "main": "./index.js",
     "type": "module",
@@ -11,7 +11,8 @@
     "homepage": "https://github.com/HuiWang111/setup-react-env",
     "scripts": {
         "test": "node --experimental-json-modules ./index.js -i",
-        "clear": "rm -rf RNDemo"
+        "clear": "rm -rf RNDemo RNTemplete",
+        "create": "npm run clear && npm run test"
     },
     "keywords": [
         "react",
