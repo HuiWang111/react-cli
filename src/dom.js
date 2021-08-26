@@ -13,7 +13,7 @@ export const createDOMProject = async (
         loading.text = 'creating project...';
         loading.color = 'green';
         loading.start();
-        await downloadRepo(`HuiWang111/react-ts-templete#bizfocus/${branch}`, projectPath);
+        await downloadRepo(`HuiWang111/react-ts-templete#${branch}`, projectPath);
         loading.stop();
         console.info('created !!!');
     
@@ -36,9 +36,9 @@ export const createDOMProject = async (
         // });
         console.info('installed !!!');
         console.info('')
-        console.info('------------------------------------------------------')
-        console.info(`运行 cd ${project} && npm run dll && npm start 启动项目`)
-        console.info('------------------------------------------------------')
+        console.info('------------------------------------------------------');
+        console.info(`运行 cd ${project} && npm run dll && npm start 启动项目`);
+        console.info('------------------------------------------------------');
     } catch (e) {
         loading.stop();
         console.error(e);

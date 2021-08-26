@@ -4,8 +4,8 @@ export const StateManagement = [
 ];
 
 export const StateManagementMapBranch = {
-    Redux: 'redux',
-    Mobx: 'mobx'
+    Redux: 'bizfocus/redux',
+    Mobx: 'main'
 };
 
 export const Envs = ['React-DOM', 'React-Native'];
