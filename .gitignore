@@ -2,3 +2,5 @@ node_modules/
 react-demo
 RNTemplete
 RNDemo
+package-lock.json
+yarn-error.log
