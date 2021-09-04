@@ -8,16 +8,16 @@ import { StateManagementMapBranch } from '../constants';
 
 export class ReactDOMProject implements Project {
     private cwd: string;
-    private projectName: string;
+    private name: string;
     private stateManagement: StateManagement;
 
     constructor(
         cwd: string,
-        projectName: string,
+        name: string,
         stateManagement: StateManagement
     ) {
         this.cwd = cwd;
-        this.projectName = projectName;
+        this.name = name;
         this.stateManagement = stateManagement;
     }
 
@@ -27,7 +27,7 @@ export class ReactDOMProject implements Project {
         if (fs.existsSync(fullName)) {
             const json = fs.readFileSync(fullName).toString();
             const data = JSON.parse(json);
-            data.name = this.projectName;
+            data.name = this.name;
             fs.writeFileSync(fullName, JSON.stringify(data, null, 4));
         } else {
             console.warn(`package.json not found in ${this.cwd}`)
@@ -52,7 +52,7 @@ export class ReactDOMProject implements Project {
             
             console.info('');
             console.info('------------------------------------------------------');
-            console.info(`运行 cd ${this.projectName} && npm run dll && npm start 启动项目`);
+            console.info(`运行 cd ${this.name} && npm run dll && npm start 启动项目`);
             console.info('------------------------------------------------------');
         } catch(e) {
             console.error(e);

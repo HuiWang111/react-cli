@@ -9,7 +9,7 @@ interface Answers {
 }
 
 export class Question {
-    public async run(): Promise<Answers> {
+    public async ask(): Promise<Answers> {
         try {
             return await inquirer.prompt([
                 {

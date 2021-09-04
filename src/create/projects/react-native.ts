@@ -9,18 +9,18 @@ import { NativeSourcePath } from '../constants';
 
 export class ReactNativeProject implements Project {
     private cwd: string;
-    private projectName: string;
+    private name: string;
 
     constructor(
         cwd: string,
-        projectName: string
+        name: string
     ) {
         this.cwd = cwd;
-        this.projectName = projectName;
+        this.name = name;
     }
 
     private async reactNativeInit() {
-        await execa(`npx react-native init ${this.projectName} --template react-native-template-typescript`, {
+        await execa(`npx react-native init ${this.name} --template react-native-template-typescript`, {
             stdio: [2, 2, 2]
         });
     }
@@ -124,9 +124,9 @@ export class ReactNativeProject implements Project {
         try {
             await download('HuiWang111/RNTemplete#main', path.join(process.cwd(), NativeSourcePath));
 
-            spinner.text = `react native init ${this.projectName}\n`;
+            spinner.text = `react native init ${this.name}\n`;
             await this.reactNativeInit();
-            spinner.succeed(`react native init ${this.projectName}\n`);
+            spinner.succeed(`react native init ${this.name}\n`);
 
             spinner.text = 'install dependencies\n';
             await this.installDependencies();  

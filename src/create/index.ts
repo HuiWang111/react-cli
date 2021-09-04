@@ -5,7 +5,7 @@ import { Project } from './interface';
 
 export async function createReactProject() {
     try {
-        const answers = await (new Question()).run();
+        const answers = await (new Question()).ask();
         
         let project: Project | undefined;
         if (answers.env === 'React-DOM') {
