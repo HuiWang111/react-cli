@@ -1,10 +1,10 @@
 import inquirer from 'inquirer';
-import { StateManagements, Envs } from './constants';
-import { DevEnv, StateManagement } from './interface';
+import { StateManagements, Platforms } from './constants';
+import { Platform, StateManagement } from './interface';
 
 interface Answers {
     projectName: string;
-    env: DevEnv;
+    platform: Platform;
     stateManagement: StateManagement;
 }
 
@@ -25,9 +25,9 @@ export class Question {
                 },
                 {
                     type: 'list',
-                    name: 'env',
+                    name: 'platform',
                     message: 'select platform',
-                    choices: Envs
+                    choices: Platforms
                 },
                 {
                     type: 'list',

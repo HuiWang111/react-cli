@@ -1,0 +1,7 @@
+digraph {
+    types -> models -> stores -> AppStore;
+    stores -> apis -> AppApi;
+    AppStore -> useAppContext;
+    AppApi -> useAppContext;
+    useAppContext -> view;
+}

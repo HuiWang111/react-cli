@@ -3,21 +3,23 @@ import { Question } from './question';
 import { ReactDOMProject, ReactNativeProject } from './projects';
 import { Project } from './interface';
 
-export async function createReactProject() {
+export async function createReactProject(templeteDir: string) {
     try {
         const answers = await (new Question()).ask();
         
         let project: Project | undefined;
-        if (answers.env === 'React-DOM') {
+        if (answers.platform === 'React-DOM') {
             project = new ReactDOMProject(
                 path.join(process.cwd(), answers.projectName),
                 answers.projectName,
-                answers.stateManagement
+                answers.stateManagement,
+                templeteDir
             );
         } else {
             project = new ReactNativeProject(
                 path.join(process.cwd(), answers.projectName),
-                answers.projectName
+                answers.projectName,
+                templeteDir
             );
         }
 

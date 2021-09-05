@@ -3,22 +3,26 @@ import path from 'path';
 import execa from 'execa';
 import ora from 'ora';
 import { StateManagement, Project } from '../interface';
-import { download } from '../../utils';
-import { StateManagementMapBranch } from '../constants';
+import { copyDir } from '../../utils';
 
 export class ReactDOMProject implements Project {
     private cwd: string;
     private name: string;
     private stateManagement: StateManagement;
+    private sourceDir: string;
+    private templeteName: string;
 
     constructor(
         cwd: string,
         name: string,
-        stateManagement: StateManagement
+        stateManagement: StateManagement,
+        templeteDir: string
     ) {
         this.cwd = cwd;
         this.name = name;
         this.stateManagement = stateManagement;
+        this.templeteName = `react-ts-${this.stateManagement.toLowerCase()}-webpack`;
+        this.sourceDir = path.join(templeteDir, this.templeteName);
     }
 
     private updatePackageJson() {
@@ -30,15 +34,14 @@ export class ReactDOMProject implements Project {
             data.name = this.name;
             fs.writeFileSync(fullName, JSON.stringify(data, null, 4));
         } else {
-            console.warn(`package.json not found in ${this.cwd}`)
+            console.warn(`package.json not found in ${this.cwd}`);
         }
     }
 
     public async create(): Promise<void> {
         try {
-            const branch = StateManagementMapBranch[this.stateManagement];
-            const spinner = ora('templete downloading').start();
-            await download(`HuiWang111/react-ts-templete#${branch}`, this.cwd);
+            const spinner = ora(`clone ${this.templeteName} templete...`).start();
+            await copyDir(this.sourceDir, this.cwd);
             
             this.updatePackageJson();
             

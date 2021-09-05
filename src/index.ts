@@ -34,7 +34,7 @@ function main() {
         );
 
         if (command === 'create') {
-            createReactProject();
+            createReactProject(path.join(__dirname, '../templetes'));
         } else if (command === 'install') {
             
         }

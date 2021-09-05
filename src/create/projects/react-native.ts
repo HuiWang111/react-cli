@@ -4,25 +4,23 @@ import execa from 'execa';
 import ora from 'ora';
 import rimraf from 'rimraf';
 import { Project } from '../interface';
-import { download, writeFileAndPrint, copyDir } from '../../utils';
-import { NativeSourcePath } from '../constants';
+import { writeFileAndPrint, copyDir } from '../../utils';
 
 export class ReactNativeProject implements Project {
     private cwd: string;
     private name: string;
+    private sourceDir: string;
+    private templeteName: string;
 
     constructor(
         cwd: string,
-        name: string
+        name: string,
+        templeteDir: string
     ) {
         this.cwd = cwd;
         this.name = name;
-    }
-
-    private async reactNativeInit() {
-        await execa(`npx react-native init ${this.name} --template react-native-template-typescript`, {
-            stdio: [2, 2, 2]
-        });
+        this.templeteName = 'react-native-mobx';
+        this.sourceDir = path.join(templeteDir, this.templeteName);
     }
 
     private async installDependencies(): Promise<void> {
@@ -71,37 +69,16 @@ export class ReactNativeProject implements Project {
 
     private rewriteFiles() {
         const spinner = ora('start rewrite files').start();
+        const toRewriteFiles = ['.eslintrc.js', '.eslintignore', 'babel.config.js', 'tsconfig.json', 'index.js'];
 
-        writeFileAndPrint(
-            '.eslintrc.js',
-            fs.readFileSync(path.join(process.cwd(), NativeSourcePath, '.eslintrc.js')),
-            this.cwd,
-            spinner
-        );
-        writeFileAndPrint(
-            '.eslintignore',
-            fs.readFileSync(path.join(process.cwd(), NativeSourcePath, '.eslintignore')),
-            this.cwd,
-            spinner
-        );
-        writeFileAndPrint(
-            'babel.config.js',
-            fs.readFileSync(path.join(process.cwd(), NativeSourcePath, 'babel.config.js')),
-            this.cwd,
-            spinner
-        );
-        writeFileAndPrint(
-            'tsconfig.json',
-            fs.readFileSync(path.join(process.cwd(), NativeSourcePath, 'tsconfig.json')),
-            this.cwd,
-            spinner
-        );
-        writeFileAndPrint(
-            'index.js',
-            fs.readFileSync(path.join(process.cwd(), NativeSourcePath, 'index.js')),
-            this.cwd,
-            spinner
-        );
+        for (const file of toRewriteFiles) {
+            writeFileAndPrint(
+                file,
+                fs.readFileSync(path.join(this.sourceDir, file)),
+                this.cwd,
+                spinner
+            );
+        }
     }
 
     private async copyDirs(): Promise<void> {
@@ -109,9 +86,8 @@ export class ReactNativeProject implements Project {
             const dirs = ['src', 'scripts'];
     
             for (const dir of dirs) {
-                const srcFullName = path.join(process.cwd(), NativeSourcePath, dir);
-                const destFullName = path.join(process.cwd(), dir);
-                await copyDir(srcFullName, destFullName);
+                const destFullName = path.join(this.cwd, dir);
+                await copyDir(this.sourceDir, destFullName);
             }
         } catch(e) {
             console.error(e);
@@ -119,31 +95,21 @@ export class ReactNativeProject implements Project {
     }
 
     public async create(): Promise<void> {
-        const spinner = ora('templete downloading').start();
-
         try {
-            await download('HuiWang111/RNTemplete#main', path.join(process.cwd(), NativeSourcePath));
+            await execa(`react-native init ${this.name} --template react-native-template-typescript`, {
+                stdio: [2, 2, 2]
+            });
 
-            spinner.text = `react native init ${this.name}\n`;
-            await this.reactNativeInit();
-            spinner.succeed(`react native init ${this.name}\n`);
-
-            spinner.text = 'install dependencies\n';
-            await this.installDependencies();  
-            spinner.succeed('install dependencies\n');
+            console.info('install dependencies\n');
+            await this.installDependencies();
             
-            spinner.text = 'install dev dependencies\n';
+            console.info('install dev dependencies\n');
             await this.installDevDependencies();
-            spinner.succeed('install dev dependencies\n');
             
             this.removeFiles();
             this.rewriteFiles();
             this.copyDirs();
-
-            rimraf.sync(path.join(process.cwd(), NativeSourcePath));
-            spinner.stop();
         } catch(e) {
-            spinner.stop();
             console.error(e);
         }
     }
