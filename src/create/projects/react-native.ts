@@ -79,6 +79,7 @@ export class ReactNativeProject implements Project {
                 spinner
             );
         }
+        spinner.stop();
     }
 
     private async copyDirs(): Promise<void> {
@@ -86,8 +87,9 @@ export class ReactNativeProject implements Project {
             const dirs = ['src', 'scripts'];
     
             for (const dir of dirs) {
+                const srcFullName = path.join(this.sourceDir, dir);
                 const destFullName = path.join(this.cwd, dir);
-                await copyDir(this.sourceDir, destFullName);
+                await copyDir(srcFullName, destFullName);
             }
         } catch(e) {
             console.error(e);
@@ -95,21 +97,27 @@ export class ReactNativeProject implements Project {
     }
 
     public async create(): Promise<void> {
-        try {
-            await execa(`react-native init ${this.name} --template react-native-template-typescript`, {
-                stdio: [2, 2, 2]
-            });
+        const spinner = ora(`react native init ${this.name}...`).start();
 
-            console.info('install dependencies\n');
+        try {
+            await execa(`react-native init ${this.name} --template react-native-template-typescript`);
+            spinner.stop();
+
+            console.info('install dependencies');
             await this.installDependencies();
             
-            console.info('install dev dependencies\n');
+            console.info('install dev dependencies');
             await this.installDevDependencies();
             
             this.removeFiles();
             this.rewriteFiles();
+
+            spinner.text = 'copy files....';
+            spinner.start();
             this.copyDirs();
+            spinner.stop();
         } catch(e) {
+            spinner.stop();
             console.error(e);
         }
     }

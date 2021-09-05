@@ -6,7 +6,7 @@ const DllReferencePlugin = require('webpack/lib/DllReferencePlugin')
 const HTMLPlugin = require('html-webpack-plugin')
 
 const DEV_CONF = {
-    host: '0.0.0.0',
+    host: 'localhost',
     port: 3000,
     proxyPath: 'http://192.168.20.16:9999',
     get publicPath() {

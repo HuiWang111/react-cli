@@ -1,4 +1,5 @@
 #!/usr/bin/env node --experimental-json-modules
+
 import argsParser from 'yargs-parser';
 import fs from 'fs';
 import path from 'path';

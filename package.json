@@ -10,7 +10,8 @@
     "scripts": {
         "test": "ts-node src/index.ts",
         "clear": "rm -rf RNDemo RNTemplete react-demo",
-        "version": "node --experimental-json-modules scripts/version.js"
+        "version": "node --experimental-json-modules scripts/version.mjs",
+        "build": "node --experimental-json-modules scripts/build.mjs"
     },
     "keywords": [
         "react",
@@ -19,8 +20,8 @@
     "author": "kennys_wang",
     "license": "ISC",
     "bin": {
-        "setup-react-env": "./index.js",
-        "sre": "./index.js"
+        "setup-react-env": "./bin/index.js",
+        "sre": "./bin/index.js"
     },
     "dependencies": {
         "axios": "^0.21.1",
@@ -39,13 +40,14 @@
         "@types/node": "^16.7.10",
         "@types/rimraf": "^3.0.2",
         "@types/yargs-parser": "^20.2.1",
+        "esbuild": "^0.12.25",
         "ks-script-utils": "^0.2.0",
         "typescript": "^4.4.2"
     },
     "files": [
         "package.json",
-        "src",
-        "index.js",
+        "bin",
+        "templetes",
         "README.md"
     ]
 }
