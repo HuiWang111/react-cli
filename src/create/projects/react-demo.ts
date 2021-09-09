@@ -2,10 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import execa from 'execa';
 import ora from 'ora';
-import { StateManagement, Project } from '../interface';
+import { StateManagement, Creatable } from '../interface';
 import { copyDir } from '../../utils';
 
-export class ReactDOMProject implements Project {
+export class ReactDOMProject implements Creatable {
     private cwd: string;
     private name: string;
     private stateManagement: StateManagement;

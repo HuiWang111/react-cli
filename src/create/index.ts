@@ -1,13 +1,13 @@
 import path from 'path';
 import { Question } from './question';
 import { ReactDOMProject, ReactNativeProject } from './projects';
-import { Project } from './interface';
+import { Creatable } from './interface';
 
 export async function createReactProject(templeteDir: string) {
     try {
         const answers = await (new Question()).ask();
         
-        let project: Project | undefined;
+        let project: Creatable | undefined;
         if (answers.platform === 'React-DOM') {
             project = new ReactDOMProject(
                 path.join(process.cwd(), answers.projectName),

@@ -299,8 +299,8 @@ var keywords = [
 var author = "kennys_wang";
 var license = "ISC";
 var bin = {
-  "setup-react-env": "./index.js",
-  sre: "./index.js"
+  "setup-react-env": "./bin/index.js",
+  sre: "./bin/index.js"
 };
 var dependencies = {
   axios: "^0.21.1",
@@ -325,8 +325,8 @@ var devDependencies = {
 };
 var files = [
   "package.json",
-  "src",
-  "index.js",
+  "bin",
+  "templetes",
   "README.md"
 ];
 var package_default = {

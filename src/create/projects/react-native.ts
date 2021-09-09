@@ -3,10 +3,10 @@ import path from 'path';
 import execa from 'execa';
 import ora from 'ora';
 import rimraf from 'rimraf';
-import { Project } from '../interface';
+import { Creatable } from '../interface';
 import { writeFileAndPrint, copyDir } from '../../utils';
 
-export class ReactNativeProject implements Project {
+export class ReactNativeProject implements Creatable {
     private cwd: string;
     private name: string;
     private sourceDir: string;
