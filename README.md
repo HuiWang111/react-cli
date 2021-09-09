@@ -8,14 +8,21 @@ npm i setup-react-env -g
 ## usage
 ### to create react app
 ```shell
-setup-react-env --init
+setup-react-env create
 # or
-setup-react-env -i
+sre create
 ```
 
 ### version
 ```shell
 setup-react-env --version
 # or
-setup-react-env -v
+sre create --version
+```
+
+### help
+```shell
+setup-react-env --help
+# or
+sre create --help
 ```
