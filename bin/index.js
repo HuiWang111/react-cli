@@ -134,9 +134,9 @@ var import_path2 = __toModule(require("path"));
 var import_execa = __toModule(require("execa"));
 var import_ora = __toModule(require("ora"));
 var ReactDOMProject = class {
-  constructor(cwd, name2, stateManagement, templeteDir) {
+  constructor(cwd, name, stateManagement, templeteDir) {
     this.cwd = cwd;
-    this.name = name2;
+    this.name = name;
     this.stateManagement = stateManagement;
     this.templeteName = `react-ts-${this.stateManagement.toLowerCase()}-webpack`;
     this.sourceDir = import_path2.default.join(templeteDir, this.templeteName);
@@ -180,9 +180,9 @@ var import_execa2 = __toModule(require("execa"));
 var import_ora2 = __toModule(require("ora"));
 var import_rimraf = __toModule(require("rimraf"));
 var ReactNativeProject = class {
-  constructor(cwd, name2, templeteDir) {
+  constructor(cwd, name, templeteDir) {
     this.cwd = cwd;
-    this.name = name2;
+    this.name = name;
     this.templeteName = "react-native-mobx";
     this.sourceDir = import_path3.default.join(templeteDir, this.templeteName);
   }
@@ -277,81 +277,14 @@ async function createReactProject(templeteDir) {
   }
 }
 
-// package.json
-var name = "setup-react-env";
-var version = "2.0.0";
-var description = "react\u811A\u624B\u67B6";
-var repository = {
-  type: "git",
-  url: "git@github.com:HuiWang111/setup-react-env.git"
-};
-var homepage = "https://github.com/HuiWang111/setup-react-env";
-var scripts = {
-  test: "ts-node src/index.ts",
-  clear: "rm -rf RNDemo RNTemplete react-demo",
-  version: "node --experimental-json-modules scripts/version.mjs",
-  build: "node --experimental-json-modules scripts/build.mjs"
-};
-var keywords = [
-  "react",
-  "\u811A\u624B\u67B6"
-];
-var author = "kennys_wang";
-var license = "ISC";
-var bin = {
-  "setup-react-env": "./bin/index.js",
-  sre: "./bin/index.js"
-};
-var dependencies = {
-  axios: "^0.21.1",
-  chalk: "^4.1.1",
-  clear: "^0.1.0",
-  "download-git-repo": "^3.0.2",
-  execa: "^5.1.1",
-  figlet: "^1.5.0",
-  inquirer: "^8.1.0",
-  ncp: "^2.0.0",
-  ora: "^5.4.0",
-  rimraf: "^3.0.2",
-  "yargs-parser": "^20.2.9"
-};
-var devDependencies = {
-  "@types/node": "^16.7.10",
-  "@types/rimraf": "^3.0.2",
-  "@types/yargs-parser": "^20.2.1",
-  esbuild: "^0.12.25",
-  "ks-script-utils": "^0.2.0",
-  typescript: "^4.4.2"
-};
-var files = [
-  "package.json",
-  "bin",
-  "templetes",
-  "README.md"
-];
-var package_default = {
-  name,
-  version,
-  description,
-  repository,
-  homepage,
-  scripts,
-  keywords,
-  author,
-  license,
-  bin,
-  dependencies,
-  devDependencies,
-  files
-};
-
 // src/index.ts
+var import_package = __toModule(require("../package.json"));
 var args = (0, import_yargs_parser.default)(process.argv.slice(2));
 function printHelp() {
   console.info(import_fs4.default.readFileSync(import_path5.default.join(__dirname, "help.txt"), "utf-8"));
 }
 function printVersion() {
-  console.info(package_default.version);
+  console.info(import_package.default.version);
 }
 function main() {
   const { command, options } = getCmdAndOptions(args);

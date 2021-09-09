@@ -9,7 +9,10 @@ esbuild.buildSync({
     bundle: true,
     platform: 'node',
     target: ['node12'],
-    external: [...Object.keys(pkg.dependencies)],
+    external: [
+        ...Object.keys(pkg.dependencies),
+        '/package.json'
+    ],
     outfile: 'bin/index.js',
     loader: {
         '.ts': 'ts'
