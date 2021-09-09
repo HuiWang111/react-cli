@@ -279,7 +279,7 @@ async function createReactProject(templeteDir) {
 
 // package.json
 var name = "setup-react-env";
-var version = "1.1.1";
+var version = "2.0.0";
 var description = "react\u811A\u624B\u67B6";
 var repository = {
   type: "git",
