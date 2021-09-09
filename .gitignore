@@ -1,4 +1,7 @@
 node_modules/
+**/node_modules/
 react-demo
-RNTemplete
-RNDemo
+/RNTemplete
+/RNDemo
+/package-lock.json
+yarn-error.log

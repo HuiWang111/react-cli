@@ -1,0 +1,10 @@
+digraph {
+    PrivateRoutePage -> routerConfig -> privateRouteConfig;
+    PublicRoutePage -> routerConfig -> publicRouteConfig;
+    privateRouteConfig -> layout;
+    publicRouteConfig -> layout;
+    layout -> PrivateLayout;
+    layout -> PublicLayout;
+    PrivateLayout -> App;
+    PublicLayout -> App;
+}

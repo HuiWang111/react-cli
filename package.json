@@ -1,49 +1,53 @@
 {
-	"name": "setup-react-env",
-	"version": "1.1.1",
-	"description": "react脚手架",
-	"main": "./index.js",
-	"type": "module",
-	"repository": {
-		"type": "git",
-		"url": "git@github.com:HuiWang111/setup-react-env.git"
-	},
-	"homepage": "https://github.com/HuiWang111/setup-react-env",
-	"scripts": {
-		"test": "node --experimental-json-modules ./index.js -i",
-		"clear": "rm -rf RNDemo RNTemplete react-demo",
-		"create": "npm run clear && npm run test",
-		"version": "node --experimental-json-modules scripts/version.js"
-	},
-	"keywords": [
-		"react",
-		"脚手架"
-	],
-	"author": "kennys_wang",
-	"license": "ISC",
-	"bin": {
-		"setup-react-env": "./index.js"
-	},
-	"dependencies": {
-		"axios": "^0.21.1",
-		"chalk": "^4.1.1",
-		"clear": "^0.1.0",
-		"commander": "^7.2.0",
-		"download-git-repo": "^3.0.2",
-		"execa": "^5.1.1",
-		"figlet": "^1.5.0",
-		"inquirer": "^8.1.0",
-		"ora": "^5.4.0",
-		"rimraf": "^3.0.2"
-	},
-	"devDependencies": {
-		"ks-script-utils": "^0.2.0",
-		"yargs-parser": "^20.2.9"
-	},
-	"files": [
-		"package.json",
-		"src",
-		"index.js",
-		"README.md"
-	]
+    "name": "setup-react-env",
+    "version": "2.0.0",
+    "description": "react脚手架",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:HuiWang111/setup-react-env.git"
+    },
+    "homepage": "https://github.com/HuiWang111/setup-react-env",
+    "scripts": {
+        "test": "ts-node src/index.ts",
+        "clear": "rm -rf RNDemo RNTemplete react-demo",
+        "version": "node --experimental-json-modules scripts/version.mjs",
+        "build": "node --experimental-json-modules scripts/build.mjs"
+    },
+    "keywords": [
+        "react",
+        "脚手架"
+    ],
+    "author": "kennys_wang",
+    "license": "ISC",
+    "bin": {
+        "setup-react-env": "./bin/index.js",
+        "sre": "./bin/index.js"
+    },
+    "dependencies": {
+        "axios": "^0.21.1",
+        "chalk": "^4.1.1",
+        "clear": "^0.1.0",
+        "download-git-repo": "^3.0.2",
+        "execa": "^5.1.1",
+        "figlet": "^1.5.0",
+        "inquirer": "^8.1.0",
+        "ncp": "^2.0.0",
+        "ora": "^5.4.0",
+        "rimraf": "^3.0.2",
+        "yargs-parser": "^20.2.9"
+    },
+    "devDependencies": {
+        "@types/node": "^16.7.10",
+        "@types/rimraf": "^3.0.2",
+        "@types/yargs-parser": "^20.2.1",
+        "esbuild": "^0.12.25",
+        "ks-script-utils": "^0.2.0",
+        "typescript": "^4.4.2"
+    },
+    "files": [
+        "package.json",
+        "bin",
+        "templetes",
+        "README.md"
+    ]
 }
