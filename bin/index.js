@@ -41,7 +41,6 @@ var import_chalk = __toModule(require("chalk"));
 var import_figlet = __toModule(require("figlet"));
 
 // src/utils.ts
-var import_download_git_repo = __toModule(require("download-git-repo"));
 var import_fs = __toModule(require("fs"));
 var import_path = __toModule(require("path"));
 var import_ncp = __toModule(require("ncp"));

@@ -1,4 +1,3 @@
-import downloadGitRepo from 'download-git-repo';
 import fs from 'fs';
 import ora from 'ora';
 import path from 'path';
@@ -17,18 +16,6 @@ export function getCmdAndOptions(args: Record<string, any> & { _?: Array<string>
     delete args['_'];
 
     return { command, options: { ...args } };
-}
-
-export function download(repoUrl: string, path: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-        downloadGitRepo(repoUrl, path, error => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve();
-            }
-        });
-    });
 }
 
 export function writeFileAndPrint(
