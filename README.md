@@ -17,12 +17,12 @@ sre create
 ```shell
 setup-react-env --version
 # or
-sre create --version
+sre --version
 ```
 
 ### help
 ```shell
 setup-react-env --help
 # or
-sre create --help
+sre --help
 ```
