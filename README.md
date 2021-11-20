@@ -26,3 +26,6 @@ setup-react-env --help
 # or
 sre --help
 ```
+
+## TODOS
+- [x] 模板增加基本的hook，如`useMount`等

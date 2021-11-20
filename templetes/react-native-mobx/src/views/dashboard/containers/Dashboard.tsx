@@ -1,6 +1,5 @@
 import React, { FC } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
-import { Button } from 'react-native-elements'
+import { View, Text, StyleSheet, Button } from 'react-native'
 import { useAppContext } from '../../../hooks'
 import { observer } from 'mobx-react-lite'
 

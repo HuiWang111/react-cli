@@ -9,5 +9,5 @@ if (process.env.NODE_ENV === 'production') {
 export { baseURL }
 
 export const headers = {
-    [TOKEN_KEY]: AuthStore.token
+    [TOKEN_KEY]: AuthStore.token || ''
 }

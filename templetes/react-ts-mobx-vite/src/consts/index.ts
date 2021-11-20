@@ -1,1 +1,0 @@
-export { STATUS_CODE_MAP, RESPONSE_CODE_MAP } from './errorCodeMap'

@@ -1,4 +1,4 @@
-import React, { FC, lazy, useEffect, useState } from 'react'
+import React, { FC, lazy, useState } from 'react'
 import Provides from './Provides'
 import {
     Switch,
@@ -10,6 +10,7 @@ import { Text } from 'react-native'
 import { PrivateRoute } from '../components'
 import { history } from './history'
 import { AuthStore } from '../stores'
+import { useMount } from '../hooks'
 
 const PrivateLayout = lazy(() => import('../layout/PrivateLayout'))
 const PublicLayout = lazy(() => import('../layout/PublicLayout'))
@@ -17,14 +18,14 @@ const PublicLayout = lazy(() => import('../layout/PublicLayout'))
 const App: FC = () => {
     const [initialized, setInitialized] = useState(false)
 
-    useEffect(() => {
+    useMount(() => {
         const initialize = async () => {
             AuthStore.token = await AuthStore.getToken()
             setInitialized(true)
         }
 
         initialize()
-    }, [])
+    })
 
     if (!initialized) {
         return <Text>initialing...</Text>
