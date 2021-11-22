@@ -5,14 +5,21 @@ import { Creatable } from './interface';
 
 export async function createReactProject(templeteDir: string) {
     try {
-        const answers = await (new Question()).ask();
+        const question = new Question();
+        await question.getTempletes(templeteDir);
+        const answers = await question.ask();
+        
+        let platform = 'React-DOM';
+        if (answers.templete.startsWith('react-native')) {
+            platform = 'React-Native';
+        }
         
         let project: Creatable | undefined;
-        if (answers.platform === 'React-DOM') {
+        if (platform === 'React-DOM') {
             project = new ReactDOMProject(
                 path.join(process.cwd(), answers.projectName),
                 answers.projectName,
-                answers.stateManagement,
+                answers.templete,
                 templeteDir
             );
         } else {

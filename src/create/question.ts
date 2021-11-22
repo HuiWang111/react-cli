@@ -1,14 +1,24 @@
 import inquirer from 'inquirer';
-import { StateManagements, Platforms } from './constants';
-import { Platform, StateManagement } from './interface';
+import { readdir } from 'fs/promises';
+import { join } from 'path';
 
 interface Answers {
     projectName: string;
-    platform: Platform;
-    stateManagement: StateManagement;
+    templete: string;
 }
 
 export class Question {
+    private _templetes: string[]
+
+    public async getTempletes(templeteDir: string): Promise<void> {
+        try {
+            const templetesName = await readdir(templeteDir)
+            this._templetes = templetesName
+        } catch(e) {
+            console.error(e)
+        }
+    }
+
     public async ask(): Promise<Answers> {
         try {
             return await inquirer.prompt([
@@ -25,15 +35,9 @@ export class Question {
                 },
                 {
                     type: 'list',
-                    name: 'platform',
-                    message: 'select platform',
-                    choices: Platforms
-                },
-                {
-                    type: 'list',
-                    name: 'stateManagement',
-                    message: 'select state management',
-                    choices: StateManagements
+                    name: 'templete',
+                    message: 'select templete',
+                    choices: this._templetes
                 }
             ]);
         } catch(e) {

@@ -2,26 +2,24 @@ import fs from 'fs';
 import path from 'path';
 import execa from 'execa';
 import ora from 'ora';
-import { StateManagement, Creatable } from '../interface';
+import { Creatable } from '../interface';
 import { copyDir } from '../../utils';
 
 export class ReactDOMProject implements Creatable {
     private cwd: string;
     private name: string;
-    private stateManagement: StateManagement;
     private sourceDir: string;
     private templeteName: string;
 
     constructor(
         cwd: string,
         name: string,
-        stateManagement: StateManagement,
+        templeteName: string,
         templeteDir: string
     ) {
         this.cwd = cwd;
         this.name = name;
-        this.stateManagement = stateManagement;
-        this.templeteName = `react-ts-${this.stateManagement.toLowerCase()}-webpack`;
+        this.templeteName = templeteName;
         this.sourceDir = path.join(templeteDir, this.templeteName);
     }
 
