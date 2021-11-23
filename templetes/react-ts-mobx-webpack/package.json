@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
+    "projectType": "dom",
     "scripts": {
         "build": "sh ./scripts/build.sh",
         "start": "clear && webpack-dev-server --config webpack/config.dev.js --inline --watch",

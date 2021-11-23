@@ -8,6 +8,7 @@ import chalk from 'chalk';
 import figlet from 'figlet';
 import { getCmdAndOptions } from './utils';
 import { createReactProject } from './create';
+import { generate } from './generate'
 import pkg from '../package.json';
 
 const args = argsParser(process.argv.slice(2));
@@ -24,20 +25,20 @@ function printVersion() {
 
 function main() {
     const { command, options } = getCmdAndOptions(args);
-
+    
     if (command) {
-        clear()
-        console.info(
-            chalk.yellow(figlet.textSync(
-                'setup react env',
-                { horizontalLayout: 'full' }
-            ))
-        );
-
-        if (command === 'create') {
-            createReactProject(path.join(__dirname, '../templetes'));
-        } else if (command === 'install') {
+        if (command[0] === 'create') {
+            clear()
+            console.info(
+                chalk.yellow(figlet.textSync(
+                    'setup react env',
+                    { horizontalLayout: 'full' }
+                ))
+            );
             
+            createReactProject(path.join(__dirname, '../templetes'));
+        } else if (command[0] === 'generate') {
+            generate(command.slice(1))
         }
     } else if (options.help) {
         printHelp();

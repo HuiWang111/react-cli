@@ -96,6 +96,19 @@ export class ReactNativeProject implements Creatable {
         }
     }
 
+    private updatePackageJson() {
+        const fullName = path.join(this.cwd, 'package.json');
+
+        if (fs.existsSync(fullName)) {
+            const json = fs.readFileSync(fullName).toString();
+            const data = JSON.parse(json);
+            data.projectType = 'native';
+            fs.writeFileSync(fullName, JSON.stringify(data, null, 4));
+        } else {
+            console.warn(`package.json not found in ${this.cwd}`);
+        }
+    }
+
     public async create(): Promise<void> {
         const spinner = ora(`react native init ${this.name}...`).start();
 

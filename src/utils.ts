@@ -2,16 +2,16 @@ import fs from 'fs';
 import ora from 'ora';
 import path from 'path';
 import ncp from 'ncp';
-import { Command } from './interface';
 
 export function getCmdAndOptions(args: Record<string, any> & { _?: Array<string> }): {
-    command: Command,
+    command: string[] | undefined,
     options: Omit<Record<string, any>, '_'>
 } {
-    const command: Command = args['_']?.[0] as Command;
+    const command: string[] | undefined = args['_'];
+    const commands = fs.readdirSync(__dirname).filter(cmd => fs.statSync(path.join(__dirname, cmd)).isDirectory())
     
-    if (command && command !== 'create' && command !== 'install') {
-        throw new Error("setup-react-env command must be in ['create', 'install']");
+    if (command && !commands.includes(command[0])) {
+        throw new Error(`setup-react-env command must be in [${commands.join(', ')}]`);
     }
     delete args['_'];
 
@@ -51,4 +51,8 @@ export function copyDir(srcDir: string, destDir: string): Promise<void> {
             }
         });
     });
+}
+
+export function upperFirst(str: string) {
+    return `${str[0].toUpperCase()}${str.slice(1)}`
 }

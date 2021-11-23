@@ -13,7 +13,7 @@ export class Question {
     public async getTempletes(templeteDir: string): Promise<void> {
         try {
             const templetesName = await readdir(templeteDir)
-            this._templetes = templetesName
+            this._templetes = templetesName.filter(name => name !== 'react-ts-redux-webpack')
         } catch(e) {
             console.error(e)
         }
