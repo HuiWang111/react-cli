@@ -56,3 +56,13 @@ export function copyDir(srcDir: string, destDir: string): Promise<void> {
 export function upperFirst(str: string) {
     return `${str[0].toUpperCase()}${str.slice(1)}`
 }
+
+export function toCamel(str: string) {
+    const index = str.indexOf('-')
+
+    if (index > 0 && index < str.length - 1) {
+        return str.replace('-', '').split('').map((a, i) => i === index ? a.toUpperCase() : a).join('')
+    }
+
+    return str
+}

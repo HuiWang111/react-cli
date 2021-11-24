@@ -32,10 +32,9 @@ sre --help
 - [x] create 命令改成选择模板
 - [ ] 增加generate命令，自动生成文件
     - [ ] `sre generate store [storeName]`
-    - [ ] `sre generate page [pageName]`
+    - [ ] `sre generate view [viewName]`
     - [ ] `sre generate style [styleName]`
     - [ ] `sre generate api [apiName]`
     - [ ] `sre generate model [modelName]`
-    - [ ] `sre generate type [typeName]`
     - [ ] `sre generate module [moduleName]`
 - [ ] 增加templete命令，可以将本机的文件夹作为templete加入的脚手架中
