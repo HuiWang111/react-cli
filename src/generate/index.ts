@@ -25,7 +25,13 @@ async function generateFunc(func: string, fileName: string): Promise<void> {
     fileName = isView ? toCamel(fileName) : fileName
     
     const projectType = getProjectType()
-    const { default: createMethod } = await import(`./code-templetes/${func}${isView ? '.' + projectType : ''}.ts`)
+
+    if (isView && !projectType) {
+        console.error('package.json not includes field `projectType`!')
+        return
+    }
+
+    const { default: createMethod } = await import(`./code-templetes/${func}${isView ? '.' + projectType : ''}.js`)
     const content = createMethod(fileName)
     writeFileSync(
         join(process.cwd(), `src/${func}s/${fileName}.${isView ? 'tsx' : 'ts'}`),

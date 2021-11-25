@@ -3,15 +3,16 @@ import ora from 'ora';
 import path from 'path';
 import ncp from 'ncp';
 
+const COMMANDS = ['create', 'generate']
+
 export function getCmdAndOptions(args: Record<string, any> & { _?: Array<string> }): {
     command: string[] | undefined,
     options: Omit<Record<string, any>, '_'>
 } {
     const command: string[] | undefined = args['_'];
-    const commands = fs.readdirSync(__dirname).filter(cmd => fs.statSync(path.join(__dirname, cmd)).isDirectory())
     
-    if (command && !commands.includes(command[0])) {
-        throw new Error(`setup-react-env command must be in [${commands.join(', ')}]`);
+    if (command && !COMMANDS.includes(command[0])) {
+        throw new Error(`setup-react-env command must be in [${COMMANDS.join(', ')}]`);
     }
     delete args['_'];
 

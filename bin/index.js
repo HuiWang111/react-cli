@@ -34,8 +34,8 @@ var __toModule = (module2) => {
 
 // src/index.ts
 var import_yargs_parser = __toModule(require("yargs-parser"));
-var import_fs4 = __toModule(require("fs"));
-var import_path5 = __toModule(require("path"));
+var import_fs5 = __toModule(require("fs"));
+var import_path6 = __toModule(require("path"));
 var import_clear = __toModule(require("clear"));
 var import_chalk = __toModule(require("chalk"));
 var import_figlet = __toModule(require("figlet"));
@@ -44,11 +44,11 @@ var import_figlet = __toModule(require("figlet"));
 var import_fs = __toModule(require("fs"));
 var import_path = __toModule(require("path"));
 var import_ncp = __toModule(require("ncp"));
+var COMMANDS = ["create", "generate"];
 function getCmdAndOptions(args2) {
-  var _a;
-  const command = (_a = args2["_"]) == null ? void 0 : _a[0];
-  if (command && command !== "create" && command !== "install") {
-    throw new Error("setup-react-env command must be in ['create', 'install']");
+  const command = args2["_"];
+  if (command && !COMMANDS.includes(command[0])) {
+    throw new Error(`setup-react-env command must be in [${COMMANDS.join(", ")}]`);
   }
   delete args2["_"];
   return { command, options: __spreadValues({}, args2) };
@@ -79,21 +79,29 @@ function copyDir(srcDir, destDir) {
     });
   });
 }
+function toCamel(str) {
+  const index = str.indexOf("-");
+  if (index > 0 && index < str.length - 1) {
+    return str.replace("-", "").split("").map((a, i) => i === index ? a.toUpperCase() : a).join("");
+  }
+  return str;
+}
 
 // src/create/index.ts
 var import_path4 = __toModule(require("path"));
 
 // src/create/question.ts
 var import_inquirer = __toModule(require("inquirer"));
-
-// src/create/constants.ts
-var StateManagements = [
-  "Mobx"
-];
-var Platforms = ["React-DOM", "React-Native"];
-
-// src/create/question.ts
+var import_promises = __toModule(require("fs/promises"));
 var Question = class {
+  async getTempletes(templeteDir) {
+    try {
+      const templetesName = await (0, import_promises.readdir)(templeteDir);
+      this._templetes = templetesName.filter((name) => name !== "react-ts-redux-webpack");
+    } catch (e) {
+      console.error(e);
+    }
+  }
   async ask() {
     try {
       return await import_inquirer.default.prompt([
@@ -110,15 +118,9 @@ var Question = class {
         },
         {
           type: "list",
-          name: "platform",
-          message: "select platform",
-          choices: Platforms
-        },
-        {
-          type: "list",
-          name: "stateManagement",
-          message: "select state management",
-          choices: StateManagements
+          name: "templete",
+          message: "select templete",
+          choices: this._templetes
         }
       ]);
     } catch (e) {
@@ -133,11 +135,10 @@ var import_path2 = __toModule(require("path"));
 var import_execa = __toModule(require("execa"));
 var import_ora = __toModule(require("ora"));
 var ReactDOMProject = class {
-  constructor(cwd, name, stateManagement, templeteDir) {
+  constructor(cwd, name, templeteName, templeteDir) {
     this.cwd = cwd;
     this.name = name;
-    this.stateManagement = stateManagement;
-    this.templeteName = `react-ts-${this.stateManagement.toLowerCase()}-webpack`;
+    this.templeteName = templeteName;
     this.sourceDir = import_path2.default.join(templeteDir, this.templeteName);
   }
   updatePackageJson() {
@@ -238,6 +239,17 @@ var ReactNativeProject = class {
       console.error(e);
     }
   }
+  updatePackageJson() {
+    const fullName = import_path3.default.join(this.cwd, "package.json");
+    if (import_fs3.default.existsSync(fullName)) {
+      const json = import_fs3.default.readFileSync(fullName).toString();
+      const data = JSON.parse(json);
+      data.projectType = "native";
+      import_fs3.default.writeFileSync(fullName, JSON.stringify(data, null, 4));
+    } else {
+      console.warn(`package.json not found in ${this.cwd}`);
+    }
+  }
   async create() {
     const spinner = (0, import_ora2.default)(`react native init ${this.name}...`).start();
     try {
@@ -263,10 +275,16 @@ var ReactNativeProject = class {
 // src/create/index.ts
 async function createReactProject(templeteDir) {
   try {
-    const answers = await new Question().ask();
+    const question = new Question();
+    await question.getTempletes(templeteDir);
+    const answers = await question.ask();
+    let platform = "React-DOM";
+    if (answers.templete.startsWith("react-native")) {
+      platform = "React-Native";
+    }
     let project;
-    if (answers.platform === "React-DOM") {
-      project = new ReactDOMProject(import_path4.default.join(process.cwd(), answers.projectName), answers.projectName, answers.stateManagement, templeteDir);
+    if (platform === "React-DOM") {
+      project = new ReactDOMProject(import_path4.default.join(process.cwd(), answers.projectName), answers.projectName, answers.templete, templeteDir);
     } else {
       project = new ReactNativeProject(import_path4.default.join(process.cwd(), answers.projectName), answers.projectName, templeteDir);
     }
@@ -276,11 +294,43 @@ async function createReactProject(templeteDir) {
   }
 }
 
+// src/generate/index.ts
+var import_fs4 = __toModule(require("fs"));
+var import_path5 = __toModule(require("path"));
+async function generate(command) {
+  const [func, fileName] = command;
+  if (func === "module") {
+    for (const f of ["view", "store", "model", "api", "style"]) {
+      await generateFunc(f, fileName);
+    }
+  } else {
+    generateFunc(func, fileName);
+  }
+}
+function getProjectType() {
+  const json = (0, import_fs4.readFileSync)((0, import_path5.join)(process.cwd(), "package.json")).toString();
+  const data = JSON.parse(json);
+  return data.projectType;
+}
+async function generateFunc(func, fileName) {
+  const isView = func === "view";
+  fileName = isView ? toCamel(fileName) : fileName;
+  const projectType = getProjectType();
+  if (isView && !projectType) {
+    console.error("package.json not includes field `projectType`!");
+    return;
+  }
+  const { default: createMethod } = await Promise.resolve().then(() => __toModule(require(`./code-templetes/${func}${isView ? "." + projectType : ""}.js`)));
+  const content = createMethod(fileName);
+  (0, import_fs4.writeFileSync)((0, import_path5.join)(process.cwd(), `src/${func}s/${fileName}.${isView ? "tsx" : "ts"}`), content);
+  console.info(`${func} ${fileName} is already generated!`);
+}
+
 // src/index.ts
 var import_package = __toModule(require("../package.json"));
 var args = (0, import_yargs_parser.default)(process.argv.slice(2));
 function printHelp() {
-  console.info(import_fs4.default.readFileSync(import_path5.default.join(__dirname, "help.txt"), "utf-8"));
+  console.info(import_fs5.default.readFileSync(import_path6.default.join(__dirname, "help.txt"), "utf-8"));
 }
 function printVersion() {
   console.info(import_package.default.version);
@@ -288,11 +338,12 @@ function printVersion() {
 function main() {
   const { command, options } = getCmdAndOptions(args);
   if (command) {
-    (0, import_clear.default)();
-    console.info(import_chalk.default.yellow(import_figlet.default.textSync("setup react env", { horizontalLayout: "full" })));
-    if (command === "create") {
-      createReactProject(import_path5.default.join(__dirname, "../templetes"));
-    } else if (command === "install") {
+    if (command[0] === "create") {
+      (0, import_clear.default)();
+      console.info(import_chalk.default.yellow(import_figlet.default.textSync("setup react env", { horizontalLayout: "full" })));
+      createReactProject(import_path6.default.join(__dirname, "../templetes"));
+    } else if (command[0] === "generate") {
+      generate(command.slice(1));
     }
   } else if (options.help) {
     printHelp();
