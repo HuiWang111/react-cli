@@ -10,8 +10,9 @@ describe('test utils', () => {
     it('toCamel should work', () => {
         expect(toCamel('auth')).toBe('auth')
         expect(toCamel('order-detail')).toBe('orderDetail')
-        expect(toCamel('-detail')).toBe('-detail')
-        expect(toCamel('detail-')).toBe('detail-')
+        expect(toCamel('-detail')).toBe('Detail')
+        expect(toCamel('detail-')).toBe('detail')
         expect(toCamel('detail-a')).toBe('detailA')
+        expect(toCamel('order-detail-orders')).toBe('orderDetailOrders')
     })
 })

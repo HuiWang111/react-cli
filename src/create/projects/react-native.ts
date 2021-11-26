@@ -129,6 +129,7 @@ export class ReactNativeProject implements Creatable {
             spinner.start();
             this.copyDirs();
             spinner.stop();
+            this.updatePackageJson()
         } catch(e) {
             spinner.stop();
             console.error(e);

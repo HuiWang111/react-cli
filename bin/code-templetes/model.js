@@ -37,8 +37,10 @@ function upperFirst(str) {
 
 // src/generate/code-templetes/model.ts
 function createModel(fileName) {
-  return `
-export class ${upperFirst(fileName)} {
+  const className = upperFirst(fileName);
+  return `import { I${className} } from '../types'
+
+export class ${className} implements I${className} {
     constructor() {
         
     }

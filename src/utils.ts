@@ -59,11 +59,17 @@ export function upperFirst(str: string) {
 }
 
 export function toCamel(str: string) {
-    const index = str.indexOf('-')
+    const indexes = str.split('').reduce((arr: number[], a: string, i: number): number[] => {
+        if (a === '-') {
+            arr.push(i)
+        }
+        return arr
+    }, []).map(i => i + 1)
 
-    if (index > 0 && index < str.length - 1) {
-        return str.replace('-', '').split('').map((a, i) => i === index ? a.toUpperCase() : a).join('')
-    }
-
-    return str
+    return str.split('').map((a: string, i: number) => {
+        if (indexes.includes(i)) {
+            return a.toUpperCase()
+        }
+        return a
+    }).join('').replace(/-/g, '')
 }

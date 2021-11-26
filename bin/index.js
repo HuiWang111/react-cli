@@ -79,12 +79,22 @@ function copyDir(srcDir, destDir) {
     });
   });
 }
+function upperFirst(str) {
+  return `${str[0].toUpperCase()}${str.slice(1)}`;
+}
 function toCamel(str) {
-  const index = str.indexOf("-");
-  if (index > 0 && index < str.length - 1) {
-    return str.replace("-", "").split("").map((a, i) => i === index ? a.toUpperCase() : a).join("");
-  }
-  return str;
+  const indexes = str.split("").reduce((arr, a, i) => {
+    if (a === "-") {
+      arr.push(i);
+    }
+    return arr;
+  }, []).map((i) => i + 1);
+  return str.split("").map((a, i) => {
+    if (indexes.includes(i)) {
+      return a.toUpperCase();
+    }
+    return a;
+  }).join("").replace(/-/g, "");
 }
 
 // src/create/index.ts
@@ -265,6 +275,7 @@ var ReactNativeProject = class {
       spinner.start();
       this.copyDirs();
       spinner.stop();
+      this.updatePackageJson();
     } catch (e) {
       spinner.stop();
       console.error(e);
@@ -300,9 +311,6 @@ var import_path5 = __toModule(require("path"));
 async function generate(command) {
   const [func, fileName] = command;
   if (func === "module") {
-    for (const f of ["view", "store", "model", "api", "style"]) {
-      await generateFunc(f, fileName);
-    }
   } else {
     generateFunc(func, fileName);
   }
@@ -314,16 +322,20 @@ function getProjectType() {
 }
 async function generateFunc(func, fileName) {
   const isView = func === "view";
-  fileName = isView ? toCamel(fileName) : fileName;
+  const fileNameCamel = upperFirst(toCamel(fileName));
   const projectType = getProjectType();
   if (isView && !projectType) {
     console.error("package.json not includes field `projectType`!");
     return;
   }
+  const isStyle = func === "style";
+  if (isStyle && projectType === "dom") {
+    return;
+  }
   const { default: createMethod } = await Promise.resolve().then(() => __toModule(require(`./code-templetes/${func}${isView ? "." + projectType : ""}.js`)));
-  const content = createMethod(fileName);
-  (0, import_fs4.writeFileSync)((0, import_path5.join)(process.cwd(), `src/${func}s/${fileName}.${isView ? "tsx" : "ts"}`), content);
-  console.info(`${func} ${fileName} is already generated!`);
+  const content = createMethod(fileNameCamel);
+  (0, import_fs4.writeFileSync)((0, import_path5.join)(process.cwd(), `src/${isStyle ? "view" : func}s/${isView ? fileNameCamel : fileName}.${isView ? "tsx" : "ts"}`), content);
+  console.info(`${func} ${isView ? fileNameCamel : fileName} is already generated!`);
 }
 
 // src/index.ts
