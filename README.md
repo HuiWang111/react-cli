@@ -27,6 +27,9 @@ setup-react-env --help
 sre --help
 ```
 
+### generate
+[auto generate file](https://github.com/HuiWang111/setup-react-env/blob/main/docs/command.md)
+
 ## TODOS
 - [x] 模板增加基本的hook，如`useMount`等
 - [x] create 命令改成选择模板

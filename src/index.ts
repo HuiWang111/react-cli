@@ -15,7 +15,13 @@ const args = argsParser(process.argv.slice(2));
 
 function printHelp() {
     console.info(
-        fs.readFileSync(path.join(__dirname, 'help.txt'), 'utf-8')
+        fs.readFileSync(path.join(__dirname, 'helps', 'index.txt'), 'utf-8')
+    );
+}
+
+function printGenerateHelp() {
+    console.info(
+        fs.readFileSync(path.join(__dirname, 'helps', 'generate.txt'), 'utf-8')
     );
 }
 
@@ -26,7 +32,7 @@ function printVersion() {
 function main() {
     const { command, options } = getCmdAndOptions(args);
     
-    if (command) {
+    if (command && command.length > 0) {
         if (command[0] === 'create') {
             clear()
             console.info(
@@ -38,7 +44,11 @@ function main() {
             
             createReactProject(path.join(__dirname, '../templetes'));
         } else if (command[0] === 'generate') {
-            generate(command.slice(1))
+            if (options.help) {
+                printGenerateHelp()
+            } else {
+                generate(command.slice(1))
+            }
         }
     } else if (options.help) {
         printHelp();

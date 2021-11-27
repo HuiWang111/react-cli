@@ -11,7 +11,7 @@ export function getCmdAndOptions(args: Record<string, any> & { _?: Array<string>
 } {
     const command: string[] | undefined = args['_'];
     
-    if (command && !COMMANDS.includes(command[0])) {
+    if (command && command.length > 0 && !COMMANDS.includes(command[0])) {
         throw new Error(`setup-react-env command must be in [${COMMANDS.join(', ')}]`);
     }
     delete args['_'];

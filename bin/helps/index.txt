@@ -3,6 +3,7 @@ Usage: sre <command> [options]
 
 Commands：
   sre create                       create react prject
+  sre generate                     generate file
 
 Options：
   --help      

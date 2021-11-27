@@ -47,7 +47,7 @@ var import_ncp = __toModule(require("ncp"));
 var COMMANDS = ["create", "generate"];
 function getCmdAndOptions(args2) {
   const command = args2["_"];
-  if (command && !COMMANDS.includes(command[0])) {
+  if (command && command.length > 0 && !COMMANDS.includes(command[0])) {
     throw new Error(`setup-react-env command must be in [${COMMANDS.join(", ")}]`);
   }
   delete args2["_"];
@@ -342,20 +342,27 @@ async function generateFunc(func, fileName) {
 var import_package = __toModule(require("../package.json"));
 var args = (0, import_yargs_parser.default)(process.argv.slice(2));
 function printHelp() {
-  console.info(import_fs5.default.readFileSync(import_path6.default.join(__dirname, "help.txt"), "utf-8"));
+  console.info(import_fs5.default.readFileSync(import_path6.default.join(__dirname, "helps", "index.txt"), "utf-8"));
+}
+function printGenerateHelp() {
+  console.info(import_fs5.default.readFileSync(import_path6.default.join(__dirname, "helps", "generate.txt"), "utf-8"));
 }
 function printVersion() {
   console.info(import_package.default.version);
 }
 function main() {
   const { command, options } = getCmdAndOptions(args);
-  if (command) {
+  if (command && command.length > 0) {
     if (command[0] === "create") {
       (0, import_clear.default)();
       console.info(import_chalk.default.yellow(import_figlet.default.textSync("setup react env", { horizontalLayout: "full" })));
       createReactProject(import_path6.default.join(__dirname, "../templetes"));
     } else if (command[0] === "generate") {
-      generate(command.slice(1));
+      if (options.help) {
+        printGenerateHelp();
+      } else {
+        generate(command.slice(1));
+      }
     }
   } else if (options.help) {
     printHelp();
