@@ -1,47 +1,57 @@
-import { readFileSync, writeFileSync } from 'fs'
-import { join } from 'path'
-import { toCamel, upperFirst } from '../utils'
+import {
+    Api,
+    Model,
+    Store,
+    Style,
+    DOMView,
+    NativeView
+} from './generators'
+import { getProjectType } from './utils'
+import { isCamelCase } from '../utils'
 
 export async function generate(command: string[]) {
-    const [func, fileName] = command
-    
-    if (func === 'module') {
-        // for (const f of ['view', 'store', 'model', 'api', 'style']) {
-        //     await generateFunc(f, fileName)
-        // }
-    } else {
-        generateFunc(func, fileName)
+    const [type, fileName] = command
+
+    if (isCamelCase(fileName)) {
+        console.error('do not use camelCase, please use snake_case or kebab-case')
+        return
     }
-}
-
-function getProjectType(): string {
-    const json = readFileSync(join(process.cwd(), 'package.json')).toString()
-    const data = JSON.parse(json)
-    return data.projectType
-}
-
-async function generateFunc(func: string, fileName: string): Promise<void> {
-    const isView = func === 'view'
-    const fileNameCamel = upperFirst(toCamel(fileName));
     
     const projectType = getProjectType()
-
-    if (isView && !projectType) {
-        console.error('package.json not includes field `projectType`!')
-        return
-    }
+    const absolutePath = projectType === 'native' ? '@/' : ''
     
-    const isStyle = func === 'style'
-    if (isStyle && projectType === 'dom') {
-        return
+    switch (type) {
+        case 'api': {
+            (new Api(fileName, absolutePath)).generate()
+            break
+        }
+        case 'model': {
+            (new Model(fileName, absolutePath)).generate()
+            break
+        }
+        case 'store': {
+            (new Store(fileName)).generate()
+            break
+        }
+        case 'style': {
+            if (projectType !== 'native') {
+                console.error('your projectType should be `native`')
+            } else {
+                (new Style(fileName)).generate()
+            }
+            break
+        }
+        case 'view': {
+            if (!projectType) {
+                console.error('package.json not include field `projectType`!')
+            } else if (projectType === 'native') {
+                (new NativeView(fileName)).generate()
+            } else {
+                (new DOMView(fileName)).generate()
+            }
+            break
+        }
+        default:
+            console.error('type is not correct!!!')
     }
-
-    const { default: createMethod } = await import(`./code-templetes/${func}${isView ? '.' + projectType : ''}.js`)
-    const content = createMethod(fileNameCamel)
-    writeFileSync(
-        join(process.cwd(), `src/${isStyle ? 'view' : func}s/${isView ? fileNameCamel : fileName}.${isView ? 'tsx' : 'ts'}`),
-        content
-    )
-
-    console.info(`${func} ${isView ? fileNameCamel : fileName} is already generated!`)
 }

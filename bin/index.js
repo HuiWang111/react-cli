@@ -34,8 +34,8 @@ var __toModule = (module2) => {
 
 // src/index.ts
 var import_yargs_parser = __toModule(require("yargs-parser"));
-var import_fs5 = __toModule(require("fs"));
-var import_path6 = __toModule(require("path"));
+var import_fs12 = __toModule(require("fs"));
+var import_path13 = __toModule(require("path"));
 var import_clear = __toModule(require("clear"));
 var import_chalk = __toModule(require("chalk"));
 var import_figlet = __toModule(require("figlet"));
@@ -82,9 +82,9 @@ function copyDir(srcDir, destDir) {
 function upperFirst(str) {
   return `${str[0].toUpperCase()}${str.slice(1)}`;
 }
-function toCamel(str) {
+function toCamelCase(str) {
   const indexes = str.split("").reduce((arr, a, i) => {
-    if (a === "-") {
+    if (/(-|_)/.test(a)) {
       arr.push(i);
     }
     return arr;
@@ -94,7 +94,13 @@ function toCamel(str) {
       return a.toUpperCase();
     }
     return a;
-  }).join("").replace(/-/g, "");
+  }).join("").replace(/(-|_)/g, "");
+}
+function isUpperCase(letter) {
+  return letter.toUpperCase() === letter;
+}
+function isCamelCase(str) {
+  return str.slice(1).split("").some(isUpperCase) && str.indexOf("-") < 0 && str.indexOf("_") < 0;
 }
 
 // src/create/index.ts
@@ -305,47 +311,322 @@ async function createReactProject(templeteDir) {
   }
 }
 
-// src/generate/index.ts
+// src/generate/generators/api.ts
 var import_fs4 = __toModule(require("fs"));
 var import_path5 = __toModule(require("path"));
-async function generate(command) {
-  const [func, fileName] = command;
-  if (func === "module") {
-  } else {
-    generateFunc(func, fileName);
+var Api = class {
+  constructor(fileName, absolutePath) {
+    this._fileName = fileName;
+    this._absolutePath = absolutePath;
   }
+  get _templete() {
+    return `import { AxiosInstance } from 'axios'
+import { AppStore } from '${this._absolutePath}stores/index'
+
+export class ${upperFirst(toCamelCase(this._fileName))}Api {
+    constructor(
+        private httpClient: AxiosInstance,
+        private store: AppStore
+    ) {}
 }
+
+`;
+  }
+  generate() {
+    (0, import_fs4.writeFileSync)((0, import_path5.join)(process.cwd(), `src/apis/${this._fileName}.ts`), this._templete);
+    console.info(`api ${this._fileName} is already generated!`);
+  }
+};
+
+// src/generate/generators/model.ts
+var import_fs5 = __toModule(require("fs"));
+var import_path6 = __toModule(require("path"));
+var Model = class {
+  constructor(fileName, absolutePath) {
+    this._fileName = fileName;
+    this._absolutePath = absolutePath;
+  }
+  get _templete() {
+    const className = upperFirst(toCamelCase(this._fileName));
+    return `import { I${className} } from '${this._absolutePath}types/index'
+
+export class ${className} implements I${className} {
+    constructor() {
+        
+    }
+}
+
+`;
+  }
+  generate() {
+    (0, import_fs5.writeFileSync)((0, import_path6.join)(process.cwd(), `src/models/${this._fileName}.ts`), this._templete);
+    console.info(`models ${this._fileName} is already generated!`);
+  }
+};
+
+// src/generate/generators/store.ts
+var import_fs6 = __toModule(require("fs"));
+var import_path7 = __toModule(require("path"));
+var Store = class {
+  constructor(fileName) {
+    this._fileName = fileName;
+  }
+  get _templete() {
+    return `import { action, observable, makeObservable } from 'mobx'
+
+export class ${upperFirst(toCamelCase(this._fileName))}Store {
+    constructor() {
+        makeObservable(this)
+    }
+}
+
+`;
+  }
+  generate() {
+    (0, import_fs6.writeFileSync)((0, import_path7.join)(process.cwd(), `src/stores/${this._fileName}.ts`), this._templete);
+    console.info(`store ${this._fileName} is already generated!`);
+  }
+};
+
+// src/generate/generators/style.ts
+var import_fs7 = __toModule(require("fs"));
+var import_path8 = __toModule(require("path"));
+var import_inquirer2 = __toModule(require("inquirer"));
+var Style = class {
+  constructor(fileName) {
+    this._fileName = fileName;
+  }
+  get _templete() {
+    return `import { StyleSheet, Dimensions } from 'react-native'
+
+const { height, width } = Dimensions.get('window')
+
+export const styles = StyleSheet.create({
+    container: {
+        width,
+        height
+    }
+})
+`;
+  }
+  async _recursiveSelect(dir, head = null, acc = "") {
+    let children = (0, import_fs7.readdirSync)(dir).filter((c) => (0, import_fs7.statSync)((0, import_path8.join)(dir, c)).isDirectory());
+    if (head) {
+      children = [head, ...children];
+    }
+    try {
+      const { selected } = await import_inquirer2.default.prompt([
+        {
+          type: "list",
+          name: "selected",
+          message: "select directory",
+          choices: children
+        }
+      ]);
+      if (selected === "./") {
+        return acc;
+      } else {
+        const fullPath = (0, import_path8.join)(dir, selected);
+        if ((0, import_fs7.readdirSync)(fullPath).some((c) => (0, import_fs7.statSync)((0, import_path8.join)(fullPath, c)).isDirectory())) {
+          acc += "/" + selected;
+          return this._recursiveSelect(fullPath, "./", acc);
+        } else {
+          return acc + "/" + selected;
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  _selectDirectory() {
+    return this._recursiveSelect((0, import_path8.join)(process.cwd(), "src/views"));
+  }
+  async generate() {
+    const directory = await this._selectDirectory();
+    (0, import_fs7.writeFileSync)((0, import_path8.join)(process.cwd(), "src/views", directory, `${this._fileName}.ts`), this._templete);
+    console.info(`style ${this._fileName} is already generated!`);
+  }
+};
+
+// src/generate/generators/view.dom.ts
+var import_fs9 = __toModule(require("fs"));
+var import_path10 = __toModule(require("path"));
+
+// src/generate/generators/view.ts
+var import_inquirer3 = __toModule(require("inquirer"));
+var import_path9 = __toModule(require("path"));
+var import_fs8 = __toModule(require("fs"));
+var View = class {
+  constructor(fileName) {
+    this._fileName = fileName;
+    this._fileNameCamel = upperFirst(toCamelCase(fileName));
+  }
+  async _recursiveSelect(dir, head = null, acc = "") {
+    let children = (0, import_fs8.readdirSync)(dir).filter((c) => (0, import_fs8.statSync)((0, import_path9.join)(dir, c)).isDirectory());
+    if (head) {
+      children = [head, ...children];
+    }
+    try {
+      const { selected } = await import_inquirer3.default.prompt([
+        {
+          type: "list",
+          name: "selected",
+          message: "select directory",
+          choices: children
+        }
+      ]);
+      if (selected === "./") {
+        return acc;
+      } else {
+        const fullPath = (0, import_path9.join)(dir, selected);
+        if ((0, import_fs8.readdirSync)(fullPath).some((c) => (0, import_fs8.statSync)((0, import_path9.join)(fullPath, c)).isDirectory())) {
+          acc += "/" + selected;
+          return this._recursiveSelect(fullPath, "./", acc);
+        } else {
+          return acc + "/" + selected;
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  _selectDirectory() {
+    return this._recursiveSelect((0, import_path9.join)(process.cwd(), "src/views"));
+  }
+};
+
+// src/generate/generators/view.dom.ts
+var DOMView = class extends View {
+  constructor(fileName) {
+    super(fileName);
+  }
+  get _templete() {
+    return `import { FC } from 'react'
+import { observer } from 'mobx-react-lite'
+import { useAppContext, useMount } from 'hooks/index'
+
+export const ${this._fileNameCamel}: FC = observer(() => {
+    const { store, api } = useAppContext()
+    
+    useMount(() => {
+        // mounted
+    })
+    
+    return (
+        <div>
+            ${this._fileNameCamel}
+        </div>
+    )
+})
+
+`;
+  }
+  async generate() {
+    const directory = await this._selectDirectory();
+    (0, import_fs9.writeFileSync)((0, import_path10.join)(process.cwd(), "src/views", directory, `${this._fileNameCamel}.tsx`), this._templete);
+    console.info(`view ${this._fileNameCamel} is already generated!`);
+  }
+};
+
+// src/generate/generators/view.native.ts
+var import_fs10 = __toModule(require("fs"));
+var import_path11 = __toModule(require("path"));
+var NativeView = class extends View {
+  constructor(fileName) {
+    super(fileName);
+  }
+  get _templete() {
+    return `import React, { FC } from 'react'
+import { View, Text } from 'react-native'
+import { observer } from 'mobx-react-lite'
+import { Button } from 'rn-element'
+import { useAppContext, useMount } from '@/hooks'
+
+export const ${this._fileNameCamel}: FC = observer(() => {
+    const { store, api } = useAppContext()
+    
+    useMount(() => {
+        // mounted
+    })
+    
+    return (
+        <View>
+            <Text>${this._fileNameCamel}</Text>
+        </View>
+    )
+})
+
+`;
+  }
+  async generate() {
+    const directory = await this._selectDirectory();
+    (0, import_fs10.writeFileSync)((0, import_path11.join)(process.cwd(), "src/views", directory, `${this._fileNameCamel}.tsx`), this._templete);
+    console.info(`view ${this._fileNameCamel} is already generated!`);
+  }
+};
+
+// src/generate/utils.ts
+var import_fs11 = __toModule(require("fs"));
+var import_path12 = __toModule(require("path"));
 function getProjectType() {
-  const json = (0, import_fs4.readFileSync)((0, import_path5.join)(process.cwd(), "package.json")).toString();
+  const json = (0, import_fs11.readFileSync)((0, import_path12.join)(process.cwd(), "package.json")).toString();
   const data = JSON.parse(json);
   return data.projectType;
 }
-async function generateFunc(func, fileName) {
-  const isView = func === "view";
-  const fileNameCamel = upperFirst(toCamel(fileName));
+
+// src/generate/index.ts
+async function generate(command) {
+  const [type, fileName] = command;
+  if (isCamelCase(fileName)) {
+    console.error("do not use camelCase, please use snake_case or kebab-case");
+    return;
+  }
   const projectType = getProjectType();
-  if (isView && !projectType) {
-    console.error("package.json not includes field `projectType`!");
-    return;
+  const absolutePath = projectType === "native" ? "@/" : "";
+  switch (type) {
+    case "api": {
+      new Api(fileName, absolutePath).generate();
+      break;
+    }
+    case "model": {
+      new Model(fileName, absolutePath).generate();
+      break;
+    }
+    case "store": {
+      new Store(fileName).generate();
+      break;
+    }
+    case "style": {
+      if (projectType !== "native") {
+        console.error("your projectType should be `native`");
+      } else {
+        new Style(fileName).generate();
+      }
+      break;
+    }
+    case "view": {
+      if (!projectType) {
+        console.error("package.json not include field `projectType`!");
+      } else if (projectType === "native") {
+        new NativeView(fileName).generate();
+      } else {
+        new DOMView(fileName).generate();
+      }
+      break;
+    }
+    default:
+      console.error("type is not correct!!!");
   }
-  const isStyle = func === "style";
-  if (isStyle && projectType === "dom") {
-    return;
-  }
-  const { default: createMethod } = await Promise.resolve().then(() => __toModule(require(`./code-templetes/${func}${isView ? "." + projectType : ""}.js`)));
-  const content = createMethod(fileNameCamel);
-  (0, import_fs4.writeFileSync)((0, import_path5.join)(process.cwd(), `src/${isStyle ? "view" : func}s/${isView ? fileNameCamel : fileName}.${isView ? "tsx" : "ts"}`), content);
-  console.info(`${func} ${isView ? fileNameCamel : fileName} is already generated!`);
 }
 
 // src/index.ts
 var import_package = __toModule(require("../package.json"));
 var args = (0, import_yargs_parser.default)(process.argv.slice(2));
 function printHelp() {
-  console.info(import_fs5.default.readFileSync(import_path6.default.join(__dirname, "helps", "index.txt"), "utf-8"));
+  console.info(import_fs12.default.readFileSync(import_path13.default.join(__dirname, "helps", "index.txt"), "utf-8"));
 }
 function printGenerateHelp() {
-  console.info(import_fs5.default.readFileSync(import_path6.default.join(__dirname, "helps", "generate.txt"), "utf-8"));
+  console.info(import_fs12.default.readFileSync(import_path13.default.join(__dirname, "helps", "generate.txt"), "utf-8"));
 }
 function printVersion() {
   console.info(import_package.default.version);
@@ -356,7 +637,7 @@ function main() {
     if (command[0] === "create") {
       (0, import_clear.default)();
       console.info(import_chalk.default.yellow(import_figlet.default.textSync("setup react env", { horizontalLayout: "full" })));
-      createReactProject(import_path6.default.join(__dirname, "../templetes"));
+      createReactProject(import_path13.default.join(__dirname, "../templetes"));
     } else if (command[0] === "generate") {
       if (options.help) {
         printGenerateHelp();

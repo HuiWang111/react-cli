@@ -1,9 +1,0 @@
-setup-react-env!
-Usage: sre <command> [options]
-
-Commands：
-  sre create                       create react prject
-
-Options：
-  --help      
-  --version

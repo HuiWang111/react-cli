@@ -16,31 +16,6 @@ function copyHelps(__dirname) {
     }
 }
 
-function copyCodeTempletes(__dirname) {
-    const codeTempletesdir = path.join(__dirname, '../src/generate/code-templetes')
-    const codeTempletes = fs.readdirSync(codeTempletesdir)
-    
-    for (const templete of codeTempletes) {
-        const ext = path.extname(templete)
-        const filename = templete.replace(new RegExp(ext), '')
-        
-        esbuild.buildSync({
-            entryPoints: [path.join(codeTempletesdir, templete)],
-            bundle: true,
-            platform: 'node',
-            target: ['node12'],
-            external: [
-                ...Object.keys(pkg.dependencies),
-                '/package.json'
-            ],
-            outfile: `bin/code-templetes/${filename}.js`,
-            loader: {
-                '.ts': 'ts'
-            }
-        });
-    }
-}
-
 function build() {
     esbuild.buildSync({
         entryPoints: ['src/index.ts'],
@@ -59,7 +34,6 @@ function build() {
 
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
     copyHelps(__dirname)
-    copyCodeTempletes(__dirname)
 }
 
 build()

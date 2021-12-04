@@ -58,18 +58,28 @@ export function upperFirst(str: string) {
     return `${str[0].toUpperCase()}${str.slice(1)}`
 }
 
-export function toCamel(str: string) {
+export function toCamelCase(str: string) {
     const indexes = str.split('').reduce((arr: number[], a: string, i: number): number[] => {
-        if (a === '-') {
+        if (/(-|_)/.test(a)) {
             arr.push(i)
         }
         return arr
     }, []).map(i => i + 1)
-
+    
     return str.split('').map((a: string, i: number) => {
         if (indexes.includes(i)) {
             return a.toUpperCase()
         }
         return a
-    }).join('').replace(/-/g, '')
+    }).join('').replace(/(-|_)/g, '')
+}
+
+export function isUpperCase(letter: string) {
+    return letter.toUpperCase() === letter
+}
+
+export function isCamelCase(str: string) {
+    return str.slice(1).split('').some(isUpperCase)
+        && str.indexOf('-') < 0
+        && str.indexOf('_') < 0
 }

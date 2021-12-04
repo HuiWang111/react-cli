@@ -1,6 +1,5 @@
 import inquirer from 'inquirer';
 import { readdir } from 'fs/promises';
-import { join } from 'path';
 
 interface Answers {
     projectName: string;
