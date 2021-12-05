@@ -1,4 +1,4 @@
-import { IUser } from '../types'
+import { IUser } from '@/types/index'
 
 export class User implements IUser {
     id: number;

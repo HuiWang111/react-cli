@@ -5,7 +5,7 @@ import {
     Redirect,
     useRouteMatch
 } from 'react-router-native'
-import { publicRouteConfig } from '../config'
+import { publicRouteConfig } from '@/config/index'
 
 const PublicLayout: FC = () => {
     const match = useRouteMatch()

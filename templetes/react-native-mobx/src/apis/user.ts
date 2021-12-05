@@ -1,6 +1,6 @@
-import { HttpError } from '../utils'
+import { HttpError } from '@/utils/index'
 import { AxiosInstance } from 'axios'
-import { AppStore } from '../stores'
+import { AppStore } from '@/stores/index'
 
 export class UserApi {
     constructor(

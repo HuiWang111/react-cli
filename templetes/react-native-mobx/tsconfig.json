@@ -53,7 +53,54 @@
         // "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
         // "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
         "baseUrl": "./src",
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "paths": {
+            "@/apis/*": [
+                "apis/*"
+            ],
+            "@/app/*": [
+                "app/*"
+            ],
+            "@/assets/*": [
+                "assets/*"
+            ],
+            "@/components/*": [
+                "components/*"
+            ],
+            "@/config/*": [
+                "config/*"
+            ],
+            "@/consts/*": [
+                "consts/*"
+            ],
+            "@/hooks/*": [
+                "hooks/*"
+            ],
+            "@/layout/*": [
+                "layout/*"
+            ],
+            "@/models/*": [
+                "models/*"
+            ],
+            "@/storages/*": [
+                "storages/*"
+            ],
+            "@/stores/*": [
+                "stores/*"
+            ],
+            "@/styles/*": [
+                "styles/*"
+            ],
+            "@/types/*": [
+                "types/*"
+            ],
+            "@/utils/*": [
+                "utils/*"
+            ],
+            "@/views/*": [
+                "views/*"
+            ]
+        }
     },
     "exclude": [
         "node_modules",

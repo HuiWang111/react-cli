@@ -1,5 +1,5 @@
-import { IUser } from '../types'
-import { User } from '../models'
+import { IUser } from '@/types/index'
+import { User } from '@/models/index'
 import { AppStore } from './index'
 import { action, computed, observable } from 'mobx'
 

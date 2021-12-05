@@ -1,6 +1,6 @@
 import React, { FC, ReactElement, ComponentType } from 'react'
 import { Route, RouteProps, Redirect, RouteComponentProps } from 'react-router-native'
-import { useAppContext } from '../../hooks'
+import { useAppContext } from '@/hooks/index'
 
 export const PrivateRoute: FC<RouteProps> = ({
     component,

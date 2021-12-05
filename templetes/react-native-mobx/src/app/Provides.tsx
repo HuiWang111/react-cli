@@ -1,6 +1,6 @@
 import React, { Suspense, FC, PropsWithChildren } from 'react'
 import { Text } from 'react-native'
-import { AppContext } from '../hooks'
+import { AppContext } from '@/hooks/index'
 import { api, store } from './appContext'
 
 const Provides: FC = ({ children }: PropsWithChildren<any>) => {

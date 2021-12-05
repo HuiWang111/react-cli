@@ -1,10 +1,9 @@
 import axios, { AxiosInstance, AxiosError } from 'axios'
 import { Toast } from 'rn-element'
-import { STATUS_CODE_MAP, RESPONSE_CODE_MAP } from '../consts'
-import { history } from '../app'
-import { baseURL, headers } from '../config'
-import { store } from '../app'
-import { AuthStore } from '../stores'
+import { STATUS_CODE_MAP, RESPONSE_CODE_MAP } from '@/consts/index'
+import { history, store } from '@/app/index'
+import { baseURL, headers } from '@/config/index'
+import { AuthStore } from '@/stores/index'
 
 const HTTP_PRIVATE_KEY = 'HTTP_PRIVATE_KEY'
 interface IHttpErrorInstance {

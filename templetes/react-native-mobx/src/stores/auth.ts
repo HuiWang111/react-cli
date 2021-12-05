@@ -1,4 +1,4 @@
-import { IAuth, IAuthError, ICurrentUser } from '../types'
+import { IAuth, IAuthError, ICurrentUser } from '@/types/index'
 import { action, observable } from 'mobx'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 

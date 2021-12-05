@@ -1,10 +1,10 @@
-import { HttpError } from '../utils'
+import { HttpError } from '@/utils/index'
 import { AxiosInstance } from 'axios'
-import { ILoginData } from '../types'
-import { AppStore, AuthStore } from '../stores'
+import { ILoginData } from '@/types/index'
+import { AppStore, AuthStore } from '@/stores/index'
 import { LOGIN_PATH, LOGOUT_PATH } from './resourses'
 import { Toast } from 'rn-element'
-import { history } from '../app'
+import { history } from '@/app/index'
 
 export class AuthApi {
     constructor(

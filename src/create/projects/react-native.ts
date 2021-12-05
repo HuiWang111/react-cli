@@ -31,9 +31,9 @@ export class ReactNativeProject implements Creatable {
                 'axios',
                 'mobx',
                 'mobx-react-lite',
-                'moment',
                 'rn-element',
-                'react-router-native',
+                // TODO: upgrade to 6.x and update templete
+                'react-router-native@5.2.0',
                 'react-native-safe-area-context',
                 '@react-native-async-storage/async-storage'
             ],
@@ -50,8 +50,11 @@ export class ReactNativeProject implements Creatable {
             [
                 'i',
                 '@types/react',
+                '@types/react-native',
                 '@types/react-router-native',
                 '@babel/plugin-proposal-decorators',
+                '@babel/plugin-proposal-export-namespace-from',
+                'babel-plugin-module-resolver',
                 'eslint-plugin-spellcheck',
                 '--save-dev'
             ],

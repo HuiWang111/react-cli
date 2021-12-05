@@ -208,9 +208,8 @@ var ReactNativeProject = class {
       "axios",
       "mobx",
       "mobx-react-lite",
-      "moment",
       "rn-element",
-      "react-router-native",
+      "react-router-native@5.2.0",
       "react-native-safe-area-context",
       "@react-native-async-storage/async-storage"
     ], {
@@ -222,8 +221,11 @@ var ReactNativeProject = class {
     await (0, import_execa2.default)("npm", [
       "i",
       "@types/react",
+      "@types/react-native",
       "@types/react-router-native",
       "@babel/plugin-proposal-decorators",
+      "@babel/plugin-proposal-export-namespace-from",
+      "babel-plugin-module-resolver",
       "eslint-plugin-spellcheck",
       "--save-dev"
     ], {

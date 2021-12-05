@@ -1,4 +1,4 @@
-import { AuthStore, TOKEN_KEY } from '../stores'
+import { AuthStore, TOKEN_KEY } from '@/stores/index'
 
 let baseURL = 'http://10.0.6.36:6666'
 

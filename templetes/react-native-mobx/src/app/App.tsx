@@ -7,13 +7,13 @@ import {
     Router,
 } from 'react-router-native'
 import { Text } from 'react-native'
-import { PrivateRoute } from '../components'
+import { PrivateRoute } from '@/components/index'
 import { history } from './history'
-import { AuthStore } from '../stores'
-import { useMount } from '../hooks'
+import { AuthStore } from '@/stores/index'
+import { useMount } from '@/hooks/index'
 
-const PrivateLayout = lazy(() => import('../layout/PrivateLayout'))
-const PublicLayout = lazy(() => import('../layout/PublicLayout'))
+const PrivateLayout = lazy(() => import('@/layout/PrivateLayout'))
+const PublicLayout = lazy(() => import('@/layout/PublicLayout'))
 
 const App: FC = () => {
     const [initialized, setInitialized] = useState(false)

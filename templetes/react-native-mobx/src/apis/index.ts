@@ -1,7 +1,7 @@
-import { AppStore } from '../stores'
+import { AppStore } from '@/stores/index'
 import { AuthApi } from './auth'
 import { UserApi } from './user'
-import { Http } from '../utils'
+import { Http } from '@/utils/index'
 import { AxiosInstance } from 'axios'
 
 export class AppApi {

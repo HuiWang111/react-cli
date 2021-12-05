@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { View, Text, StyleSheet, Button } from 'react-native'
-import { useAppContext } from '../../../hooks'
+import { useAppContext } from '@/hooks/index'
 import { observer } from 'mobx-react-lite'
 import { useHistory } from 'react-router-native'
 import { Toast, Loading } from 'rn-element'

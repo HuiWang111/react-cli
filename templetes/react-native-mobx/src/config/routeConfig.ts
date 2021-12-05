@@ -5,8 +5,8 @@ interface IRouteConfig {
     component: ComponentType;
 }
 
-const Login = lazy(() => import('../views/login'))
-const Dashboard = lazy(() => import('../views/dashboard'))
+const Login = lazy(() => import('@/views/login'))
+const Dashboard = lazy(() => import('@/views/dashboard'))
 
 export const publicRouteConfig: IRouteConfig[] = [
     { path: '/auth/login', component: Login }

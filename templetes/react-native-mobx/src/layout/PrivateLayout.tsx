@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { Switch, useRouteMatch, Redirect } from 'react-router-native'
-import { PrivateRoute } from '../components'
-import { privateRouteConfig } from '../config'
+import { PrivateRoute } from '@/components/index'
+import { privateRouteConfig } from '@/config/index'
 
 const PrivateLayout: FC = () => {
     const match = useRouteMatch()

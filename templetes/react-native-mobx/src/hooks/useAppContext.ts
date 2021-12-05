@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
-import { AppStore } from '../stores'
-import { AppApi } from '../apis'
+import { AppStore } from '@/stores/index'
+import { AppApi } from '@/apis/index'
 
 export interface IAppContext {
     api: AppApi;
