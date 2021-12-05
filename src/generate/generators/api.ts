@@ -26,11 +26,14 @@ export class ${upperFirst(toCamelCase(this._fileName))}Api {
     }
 
     public generate() {
+        const filePath = `src/apis/${this._fileName}.ts`
+
         writeFileSync(
-            join(process.cwd(), `src/apis/${this._fileName}.ts`),
+            join(process.cwd(), filePath),
             this._templete
         )
-    
-        console.info(`api ${this._fileName} is already generated!`)
+        
+        console.info('')
+        console.info(`${filePath} is already generated!`)
     }
 }

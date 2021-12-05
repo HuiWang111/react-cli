@@ -51,6 +51,27 @@ export async function generate(command: string[]) {
             }
             break
         }
+        // 创建区块，执行以上所有 type
+        case 'block': {
+            await (new Api(fileName, absolutePath)).generate()
+            await (new Model(fileName, absolutePath)).generate()
+            await (new Store(fileName)).generate()
+
+            if (projectType === 'native') {
+                console.info('')
+                console.info('please select style file directory')
+                await (new Style(fileName)).generate()
+            }
+
+            console.info('')
+            console.info('please select view file directory')
+            if (projectType === 'native') {
+                await (new NativeView(fileName)).generate()
+            } else {
+                await (new DOMView(fileName)).generate()
+            }
+            break
+        }
         default:
             console.error('type is not correct!!!')
     }

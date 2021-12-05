@@ -1,9 +1,9 @@
 setup-react-env!
-Usage: sre generate <funcName> <file-name>
+Usage: sre generate <type> <file-name>
 
 Commands：
   sre generate store order-detail                Create the order-detail.ts file in the src/stores directory
-  sre generate view order-detail                 Create the orderDetail.tsx file in the src/views directory
+  sre generate view order-detail                 Create the OrderDetail.tsx file in the src/views directory
   sre generate api order-detail                  Create the order-detail.ts file in the src/apis directory
   sre generate model order-detail                Create the order-detail.ts file in the src/models directory
   sre generate style order-detail                Create the order-detail.ts file in the src/views directory (only ReactNative)

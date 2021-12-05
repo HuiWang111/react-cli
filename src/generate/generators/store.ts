@@ -22,11 +22,14 @@ export class ${upperFirst(toCamelCase(this._fileName))}Store {
     }
 
     public generate() {
+        const filePath = `src/stores/${this._fileName}.ts`
+
         writeFileSync(
-            join(process.cwd(), `src/stores/${this._fileName}.ts`),
+            join(process.cwd(), filePath),
             this._templete
         )
-    
-        console.info(`store ${this._fileName} is already generated!`)
+        
+        console.info('')
+        console.info(`${filePath} is already generated!`)
     }
 }

@@ -26,11 +26,14 @@ export class ${className} implements I${className} {
     }
 
     public generate() {
+        const filePath = `src/models/${this._fileName}.ts`
+
         writeFileSync(
-            join(process.cwd(), `src/models/${this._fileName}.ts`),
+            join(process.cwd(), filePath),
             this._templete
         )
-    
-        console.info(`models ${this._fileName} is already generated!`)
+        
+        console.info('')
+        console.info(`${filePath} is already generated!`)
     }
 }

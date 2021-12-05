@@ -35,7 +35,7 @@ var __toModule = (module2) => {
 // src/index.ts
 var import_yargs_parser = __toModule(require("yargs-parser"));
 var import_fs12 = __toModule(require("fs"));
-var import_path13 = __toModule(require("path"));
+var import_path14 = __toModule(require("path"));
 var import_clear = __toModule(require("clear"));
 var import_chalk = __toModule(require("chalk"));
 var import_figlet = __toModule(require("figlet"));
@@ -333,8 +333,10 @@ export class ${upperFirst(toCamelCase(this._fileName))}Api {
 `;
   }
   generate() {
-    (0, import_fs4.writeFileSync)((0, import_path5.join)(process.cwd(), `src/apis/${this._fileName}.ts`), this._templete);
-    console.info(`api ${this._fileName} is already generated!`);
+    const filePath = `src/apis/${this._fileName}.ts`;
+    (0, import_fs4.writeFileSync)((0, import_path5.join)(process.cwd(), filePath), this._templete);
+    console.info("");
+    console.info(`${filePath} is already generated!`);
   }
 };
 
@@ -359,8 +361,10 @@ export class ${className} implements I${className} {
 `;
   }
   generate() {
-    (0, import_fs5.writeFileSync)((0, import_path6.join)(process.cwd(), `src/models/${this._fileName}.ts`), this._templete);
-    console.info(`models ${this._fileName} is already generated!`);
+    const filePath = `src/models/${this._fileName}.ts`;
+    (0, import_fs5.writeFileSync)((0, import_path6.join)(process.cwd(), filePath), this._templete);
+    console.info("");
+    console.info(`${filePath} is already generated!`);
   }
 };
 
@@ -383,31 +387,24 @@ export class ${upperFirst(toCamelCase(this._fileName))}Store {
 `;
   }
   generate() {
-    (0, import_fs6.writeFileSync)((0, import_path7.join)(process.cwd(), `src/stores/${this._fileName}.ts`), this._templete);
-    console.info(`store ${this._fileName} is already generated!`);
+    const filePath = `src/stores/${this._fileName}.ts`;
+    (0, import_fs6.writeFileSync)((0, import_path7.join)(process.cwd(), filePath), this._templete);
+    console.info("");
+    console.info(`${filePath} is already generated!`);
   }
 };
 
 // src/generate/generators/style.ts
-var import_fs7 = __toModule(require("fs"));
-var import_path8 = __toModule(require("path"));
+var import_fs8 = __toModule(require("fs"));
+var import_path9 = __toModule(require("path"));
+
+// src/generate/generators/abstracts/select-directory.ts
 var import_inquirer2 = __toModule(require("inquirer"));
-var Style = class {
-  constructor(fileName) {
-    this._fileName = fileName;
-  }
-  get _templete() {
-    return `import { StyleSheet, Dimensions } from 'react-native'
-
-const { height, width } = Dimensions.get('window')
-
-export const styles = StyleSheet.create({
-    container: {
-        width,
-        height
-    }
-})
-`;
+var import_path8 = __toModule(require("path"));
+var import_fs7 = __toModule(require("fs"));
+var SelectDirectory = class {
+  constructor(root) {
+    this._root = root;
   }
   async _recursiveSelect(dir, head = null, acc = "") {
     let children = (0, import_fs7.readdirSync)(dir).filter((c) => (0, import_fs7.statSync)((0, import_path8.join)(dir, c)).isDirectory());
@@ -423,13 +420,13 @@ export const styles = StyleSheet.create({
           choices: children
         }
       ]);
-      if (selected === "./") {
+      if (selected === ".") {
         return acc;
       } else {
         const fullPath = (0, import_path8.join)(dir, selected);
         if ((0, import_fs7.readdirSync)(fullPath).some((c) => (0, import_fs7.statSync)((0, import_path8.join)(fullPath, c)).isDirectory())) {
           acc += "/" + selected;
-          return this._recursiveSelect(fullPath, "./", acc);
+          return this._recursiveSelect(fullPath, ".", acc);
         } else {
           return acc + "/" + selected;
         }
@@ -439,59 +436,49 @@ export const styles = StyleSheet.create({
     }
   }
   _selectDirectory() {
-    return this._recursiveSelect((0, import_path8.join)(process.cwd(), "src/views"));
+    return this._recursiveSelect(this._root);
+  }
+};
+
+// src/generate/generators/style.ts
+var Style = class extends SelectDirectory {
+  constructor(fileName) {
+    super((0, import_path9.join)(process.cwd(), "src/views"));
+    this._fileName = fileName;
+  }
+  get _templete() {
+    return `import { StyleSheet, Dimensions } from 'react-native'
+
+const { height, width } = Dimensions.get('window')
+
+export const styles = StyleSheet.create({
+    container: {
+        width,
+        height
+    }
+})
+`;
   }
   async generate() {
     const directory = await this._selectDirectory();
-    (0, import_fs7.writeFileSync)((0, import_path8.join)(process.cwd(), "src/views", directory, `${this._fileName}.ts`), this._templete);
-    console.info(`style ${this._fileName} is already generated!`);
+    const filePath = (0, import_path9.join)("src/views", directory, `${this._fileName}.ts`);
+    (0, import_fs8.writeFileSync)((0, import_path9.join)(process.cwd(), filePath), this._templete);
+    console.info("");
+    console.info(`${filePath} is already generated!`);
   }
 };
 
 // src/generate/generators/view.dom.ts
 var import_fs9 = __toModule(require("fs"));
-var import_path10 = __toModule(require("path"));
+var import_path11 = __toModule(require("path"));
 
-// src/generate/generators/view.ts
-var import_inquirer3 = __toModule(require("inquirer"));
-var import_path9 = __toModule(require("path"));
-var import_fs8 = __toModule(require("fs"));
-var View = class {
+// src/generate/generators/abstracts/view.ts
+var import_path10 = __toModule(require("path"));
+var View = class extends SelectDirectory {
   constructor(fileName) {
+    super((0, import_path10.join)(process.cwd(), "src/views"));
     this._fileName = fileName;
     this._fileNameCamel = upperFirst(toCamelCase(fileName));
-  }
-  async _recursiveSelect(dir, head = null, acc = "") {
-    let children = (0, import_fs8.readdirSync)(dir).filter((c) => (0, import_fs8.statSync)((0, import_path9.join)(dir, c)).isDirectory());
-    if (head) {
-      children = [head, ...children];
-    }
-    try {
-      const { selected } = await import_inquirer3.default.prompt([
-        {
-          type: "list",
-          name: "selected",
-          message: "select directory",
-          choices: children
-        }
-      ]);
-      if (selected === "./") {
-        return acc;
-      } else {
-        const fullPath = (0, import_path9.join)(dir, selected);
-        if ((0, import_fs8.readdirSync)(fullPath).some((c) => (0, import_fs8.statSync)((0, import_path9.join)(fullPath, c)).isDirectory())) {
-          acc += "/" + selected;
-          return this._recursiveSelect(fullPath, "./", acc);
-        } else {
-          return acc + "/" + selected;
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
-  _selectDirectory() {
-    return this._recursiveSelect((0, import_path9.join)(process.cwd(), "src/views"));
   }
 };
 
@@ -523,14 +510,16 @@ export const ${this._fileNameCamel}: FC = observer(() => {
   }
   async generate() {
     const directory = await this._selectDirectory();
-    (0, import_fs9.writeFileSync)((0, import_path10.join)(process.cwd(), "src/views", directory, `${this._fileNameCamel}.tsx`), this._templete);
-    console.info(`view ${this._fileNameCamel} is already generated!`);
+    const filePath = (0, import_path11.join)("src/views", directory, `${this._fileNameCamel}.tsx`);
+    (0, import_fs9.writeFileSync)((0, import_path11.join)(process.cwd(), filePath), this._templete);
+    console.info("");
+    console.info(`${filePath} is already generated!`);
   }
 };
 
 // src/generate/generators/view.native.ts
 var import_fs10 = __toModule(require("fs"));
-var import_path11 = __toModule(require("path"));
+var import_path12 = __toModule(require("path"));
 var NativeView = class extends View {
   constructor(fileName) {
     super(fileName);
@@ -560,16 +549,18 @@ export const ${this._fileNameCamel}: FC = observer(() => {
   }
   async generate() {
     const directory = await this._selectDirectory();
-    (0, import_fs10.writeFileSync)((0, import_path11.join)(process.cwd(), "src/views", directory, `${this._fileNameCamel}.tsx`), this._templete);
-    console.info(`view ${this._fileNameCamel} is already generated!`);
+    const filePath = (0, import_path12.join)("src/views", directory, `${this._fileNameCamel}.tsx`);
+    (0, import_fs10.writeFileSync)((0, import_path12.join)(process.cwd(), filePath), this._templete);
+    console.info("");
+    console.info(`${filePath} is already generated!`);
   }
 };
 
 // src/generate/utils.ts
 var import_fs11 = __toModule(require("fs"));
-var import_path12 = __toModule(require("path"));
+var import_path13 = __toModule(require("path"));
 function getProjectType() {
-  const json = (0, import_fs11.readFileSync)((0, import_path12.join)(process.cwd(), "package.json")).toString();
+  const json = (0, import_fs11.readFileSync)((0, import_path13.join)(process.cwd(), "package.json")).toString();
   const data = JSON.parse(json);
   return data.projectType;
 }
@@ -614,6 +605,24 @@ async function generate(command) {
       }
       break;
     }
+    case "block": {
+      await new Api(fileName, absolutePath).generate();
+      await new Model(fileName, absolutePath).generate();
+      await new Store(fileName).generate();
+      if (projectType === "native") {
+        console.info("");
+        console.info("please select style file directory");
+        await new Style(fileName).generate();
+      }
+      console.info("");
+      console.info("please select view file directory");
+      if (projectType === "native") {
+        await new NativeView(fileName).generate();
+      } else {
+        await new DOMView(fileName).generate();
+      }
+      break;
+    }
     default:
       console.error("type is not correct!!!");
   }
@@ -623,10 +632,10 @@ async function generate(command) {
 var import_package = __toModule(require("../package.json"));
 var args = (0, import_yargs_parser.default)(process.argv.slice(2));
 function printHelp() {
-  console.info(import_fs12.default.readFileSync(import_path13.default.join(__dirname, "helps", "index.txt"), "utf-8"));
+  console.info(import_fs12.default.readFileSync(import_path14.default.join(__dirname, "helps", "index.txt"), "utf-8"));
 }
 function printGenerateHelp() {
-  console.info(import_fs12.default.readFileSync(import_path13.default.join(__dirname, "helps", "generate.txt"), "utf-8"));
+  console.info(import_fs12.default.readFileSync(import_path14.default.join(__dirname, "helps", "generate.txt"), "utf-8"));
 }
 function printVersion() {
   console.info(import_package.default.version);
@@ -637,7 +646,7 @@ function main() {
     if (command[0] === "create") {
       (0, import_clear.default)();
       console.info(import_chalk.default.yellow(import_figlet.default.textSync("setup react env", { horizontalLayout: "full" })));
-      createReactProject(import_path13.default.join(__dirname, "../templetes"));
+      createReactProject(import_path14.default.join(__dirname, "../templetes"));
     } else if (command[0] === "generate") {
       if (options.help) {
         printGenerateHelp();

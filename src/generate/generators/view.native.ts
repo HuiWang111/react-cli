@@ -1,6 +1,6 @@
 import { writeFileSync } from 'fs'
 import { join } from 'path'
-import { View } from './view'
+import { View } from './abstracts/view'
 
 export class NativeView extends View {
     constructor(fileName: string) {
@@ -33,12 +33,14 @@ export const ${this._fileNameCamel}: FC = observer(() => {
 
     public async generate() {
         const directory = await this._selectDirectory()
+        const filePath = join('src/views', directory, `${this._fileNameCamel}.tsx`)
 
         writeFileSync(
-            join(process.cwd(), 'src/views', directory, `${this._fileNameCamel}.tsx`),
+            join(process.cwd(), filePath),
             this._templete
         )
-    
-        console.info(`view ${this._fileNameCamel} is already generated!`)
+        
+        console.info('')
+        console.info(`${filePath} is already generated!`)
     }
 }

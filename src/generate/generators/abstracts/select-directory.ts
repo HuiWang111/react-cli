@@ -1,21 +1,17 @@
-import { toCamelCase, upperFirst } from '../../utils'
 import inquirer from 'inquirer'
 import { join } from 'path'
 import { statSync, readdirSync } from 'fs'
 
-export class View {
-    protected _fileName: string
-    protected _fileNameCamel: string
-    protected _absolutePath: string
+export abstract class SelectDirectory {
+    private _root: string
 
-    constructor(fileName: string) {
-        this._fileName = fileName
-        this._fileNameCamel = upperFirst(toCamelCase(fileName));
+    constructor(root: string) {
+        this._root = root
     }
 
-    private async _recursiveSelect(
+    protected async _recursiveSelect(
         dir: string,
-        head: './' | null = null,
+        head: '.' | null = null,
         acc = ''
     ): Promise<string | undefined> {
         let children = readdirSync(dir).filter(c => statSync(join(dir, c)).isDirectory())
@@ -33,13 +29,13 @@ export class View {
                 }
             ]);
 
-            if (selected === './') {
+            if (selected === '.') {
                 return acc
             } else {
                 const fullPath = join(dir, selected)
                 if (readdirSync(fullPath).some(c => statSync(join(fullPath, c)).isDirectory())) {
                     acc += '/' + selected
-                    return this._recursiveSelect(fullPath, './', acc)
+                    return this._recursiveSelect(fullPath, '.', acc)
                 } else {
                     return acc + '/' + selected
                 }
@@ -50,6 +46,6 @@ export class View {
     }
 
     protected _selectDirectory(): Promise<string> {
-        return this._recursiveSelect(join(process.cwd(), 'src/views')) as Promise<string>
+        return this._recursiveSelect(this._root) as Promise<string>
     }
-} 
+}
