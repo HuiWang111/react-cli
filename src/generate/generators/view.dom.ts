@@ -10,7 +10,7 @@ export class DOMView extends View {
     private get _templete() {
         return `import { FC } from 'react'
 import { observer } from 'mobx-react-lite'
-import { useAppContext, useMount } from 'hooks/index'
+import { useAppContext, useMount } from 'hooks'
 
 export const ${this._fileNameCamel}: FC = observer(() => {
     const { store, api } = useAppContext()

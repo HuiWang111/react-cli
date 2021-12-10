@@ -492,7 +492,7 @@ var DOMView = class extends View {
   get _templete() {
     return `import { FC } from 'react'
 import { observer } from 'mobx-react-lite'
-import { useAppContext, useMount } from 'hooks/index'
+import { useAppContext, useMount } from 'hooks'
 
 export const ${this._fileNameCamel}: FC = observer(() => {
     const { store, api } = useAppContext()
@@ -531,7 +531,7 @@ var NativeView = class extends View {
 import { View, Text } from 'react-native'
 import { observer } from 'mobx-react-lite'
 import { Button } from 'rn-element'
-import { useAppContext, useMount } from '@/hooks'
+import { useAppContext, useMount } from '@/hooks/index'
 
 export const ${this._fileNameCamel}: FC = observer(() => {
     const { store, api } = useAppContext()

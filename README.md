@@ -39,5 +39,5 @@ sre --help
     - [x] `sre generate style [styleName]`
     - [x] `sre generate api [apiName]`
     - [x] `sre generate model [modelName]`
-    - [ ] `sre generate module [moduleName]`
+    - [x] `sre generate block [blockName]`
 - [ ] 增加templete命令，可以将本机的文件夹作为templete加入的脚手架中
