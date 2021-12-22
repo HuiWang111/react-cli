@@ -9,8 +9,8 @@ import {
 import { getProjectType } from './utils'
 import { isCamelCase } from '../utils'
 
-export async function generate(command: string[]) {
-    const [type, fileName] = command
+export async function generate(commands: string[]) {
+    const [type, fileName] = commands
 
     if (isCamelCase(fileName)) {
         console.error('do not use camelCase, please use snake_case or kebab-case')

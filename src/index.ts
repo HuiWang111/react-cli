@@ -33,21 +33,32 @@ function main() {
     const { command, options } = getCmdAndOptions(args);
     
     if (command && command.length > 0) {
-        if (command[0] === 'create') {
-            clear()
-            console.info(
-                chalk.yellow(figlet.textSync(
-                    'setup react env',
-                    { horizontalLayout: 'full' }
-                ))
-            );
-            
-            createReactProject(path.join(__dirname, '../templetes'));
-        } else if (command[0] === 'generate') {
-            if (options.help) {
-                printGenerateHelp()
-            } else {
-                generate(command.slice(1))
+        switch(command[0]) {
+            case 'create': {
+                clear()
+                console.info(
+                    chalk.yellow(figlet.textSync(
+                        'setup react env',
+                        { horizontalLayout: 'full' }
+                    ))
+                );
+                
+                createReactProject(path.join(__dirname, '../templetes'));
+                break;
+            }
+            case 'generate': {
+                if (options.help) {
+                    printGenerateHelp()
+                } else {
+                    generate(command.slice(1))
+                }
+                break;
+            }
+            case 'publish': {
+                break;
+            }
+            default: {
+                console.info(`command '${command[0]}' not found`)
             }
         }
     } else if (options.help) {
