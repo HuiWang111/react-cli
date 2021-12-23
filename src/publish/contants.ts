@@ -1,1 +1,1 @@
-export const CONFIG_FILE = 'sre-publish.config.js'
+export const DEFAULT_CONFIG_FILE = 'sre-rn-publish.config.js'

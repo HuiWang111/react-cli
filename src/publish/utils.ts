@@ -2,6 +2,7 @@ import { writeFile, readFile } from 'fs/promises'
 import { join } from 'path'
 import execa from 'execa'
 import { exec } from 'child_process'
+import { DEFAULT_CONFIG_FILE } from './contants'
 
 export function buildApk() {
     return new Promise((resolve) => {
@@ -153,4 +154,11 @@ export async function writeAppName(appName: string, toReplaceAppName: string) {
         filePath,
         content.replace(toReplaceAppName, appName)  
     )
+}
+
+export function getConfigFile(options: Record<string, string>) {
+    if (options.config) {
+        return join(process.cwd(), options.config)
+    }
+    return join(process.cwd(), DEFAULT_CONFIG_FILE)
 }

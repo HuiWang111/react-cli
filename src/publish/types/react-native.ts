@@ -44,7 +44,7 @@ export function getDefaultConfig({
     codePush: false,
     open: false,
     shouldCopyApp: false
-}): InternalPublishConfig {
+}, message = ''): InternalPublishConfig {
     return {
         shouldCleanCodeChange,
         mode,
@@ -59,7 +59,7 @@ export function getDefaultConfig({
         codePush,
         open,
         shouldCopyApp,
-        message: '',
+        message,
         onComplete
     }
 }

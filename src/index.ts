@@ -9,6 +9,7 @@ import figlet from 'figlet';
 import { getCmdAndOptions } from './utils';
 import { createReactProject } from './create';
 import { generate } from './generate'
+import { publish } from './publish'
 import pkg from '../package.json';
 
 const args = argsParser(process.argv.slice(2));
@@ -55,6 +56,7 @@ function main() {
                 break;
             }
             case 'publish': {
+                publish(command, options)
                 break;
             }
             default: {
