@@ -7,3 +7,4 @@ Commands：
   sre generate api order-detail                  Create the order-detail.ts file in the src/apis directory
   sre generate model order-detail                Create the order-detail.ts file in the src/models directory
   sre generate style order-detail                Create the order-detail.ts file in the src/views directory (only ReactNative)
+  sre generate block order-detail                auto run all above command
