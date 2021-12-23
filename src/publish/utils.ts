@@ -3,6 +3,7 @@ import { join } from 'path'
 import execa from 'execa'
 import { exec } from 'child_process'
 import { DEFAULT_CONFIG_FILE } from './contants'
+import { GetCustomizedCommandCallback } from './interface'
 
 export function buildApk() {
     return new Promise((resolve) => {
@@ -18,6 +19,10 @@ export function buildApk() {
     })
 }
 
+function fill(n: number): string {
+    return n > 10 ? '' + n : '0' + n
+}
+
 export function getYMD() {
     const date = new Date()
     const year = date.getFullYear()
@@ -25,9 +30,9 @@ export function getYMD() {
     const day = date.getDate()
 
     return {
-        year,
-        month,
-        day
+        year: fill(year),
+        month: fill(month),
+        day: fill(day)
     }
 }
 
@@ -41,7 +46,9 @@ export async function openApkDir() {
 
 export function getCurrentBranch(): Promise<string> {
     return new Promise((resolve, reject) => {
-        const proc = exec('git branch')
+        const proc = exec('git branch', (err) => {
+            reject(err)
+        })
         let currentBranch
     
         proc.stdout?.on('data', (chunk) => {
@@ -51,7 +58,7 @@ export function getCurrentBranch(): Promise<string> {
                 currentBranch = branch.replace('* ', '')
             }
         })
-
+        
         proc.stderr?.on('data', chunk => {
             reject(chunk)
         })
@@ -63,16 +70,27 @@ export function getCurrentBranch(): Promise<string> {
 }
 
 export async function codePush(
-    useAppcenter: boolean,
     deploymentKey: string,
     ownerName: string,
     appName: string,
     messagePrefix: string,
-    message: string
+    message: string,
+    getCustomizedCommand?: GetCustomizedCommandCallback
 ) {
-    if (useAppcenter) {
-        await exec(`appcenter codepush release-react -a ${ownerName}/${appName} -d ${deploymentKey} --description "${messagePrefix} ${message}"`)
+    let command: string
+    if (getCustomizedCommand) {
+        command = getCustomizedCommand({
+            deploymentKey,
+            ownerName,
+            appName,
+            messagePrefix,
+            message
+        })
+    } else {
+        command = `appcenter codepush release-react -a ${ownerName}/${appName} -d ${deploymentKey} --description "${messagePrefix} ${message}"`
     }
+    console.info('> ' + command)
+    await exec(command)
 }
 
 /**
@@ -98,7 +116,12 @@ export async function codePush(
 }
 
 export async function cleanCodeChange() {
-    await execa('git checkout .')
+    try {
+        await execa('git checkout .')
+    } catch(e) {
+        // not a git repository
+        // do nothing
+    }
 }
 
 export async function copyApp(isTest: boolean) {

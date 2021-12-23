@@ -56,7 +56,7 @@ function main() {
                 break;
             }
             case 'publish': {
-                publish(command, options)
+                publish(command.slice(1), options)
                 break;
             }
             default: {

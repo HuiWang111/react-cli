@@ -5,16 +5,23 @@ export type GenerateEnvCallback = (mode: PublishMode) => string;
 export type GenerateAppNameCallback = (mode: PublishMode) => GenerateAppNameCallbackReturn;
 export type GetMessagePrefixCallback = (params: GenerateVersionParams) => string;
 export type GetDeploymentKeyCallback = (mode: PublishMode) => string;
+export type GetCustomizedCommandCallback = (params: {
+    deploymentKey: string,
+    ownerName: string,
+    appName: string,
+    messagePrefix: string,
+    message: string
+}) => string;
 
 export interface GenerateVersionParams {
-    year: number;
-    month: number;
-    day: number;
+    year: string;
+    month: string;
+    day: string;
     mode: PublishMode;
 }
 
 export interface CodePushOptions {
-    useAppcenter?: boolean;
+    getCustomizedCommand?: GetCustomizedCommandCallback;
     getMessagePrefix?: GetMessagePrefixCallback;
     getDeploymentKey: GetDeploymentKeyCallback;
     ownerName: string;
@@ -29,7 +36,7 @@ export interface GenerateAppNameCallbackReturn {
 export interface PublishConfig {
     shouldCleanCodeChange?: boolean;
     mode?: PublishMode | PublishModeCallback;
-    shouldRewriteBuildGradleFile?: boolean;
+    shouldRewriteApplicationId?: boolean;
     applicationId?: string;
     generateVersion?: false | GenerateVersionCallback;
     versionFilePath?: string;
@@ -40,7 +47,7 @@ export interface PublishConfig {
     codePush: false | CodePushOptions;
     open?: boolean;
     shouldCopyApp?: boolean;
-    onComplete?: () => void;
+    onComplete?: (mode: PublishMode) => void;
 }
 
 export interface InternalPublishConfig extends Omit<Required<PublishConfig>, 'onComplete'> {
