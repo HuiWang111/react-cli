@@ -1,4 +1,4 @@
-# setup-react-env cli
+# Generate Command
 
 ## 命令
 ### sre generate store order

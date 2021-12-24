@@ -35,16 +35,16 @@ var __toModule = (module2) => {
 // src/index.ts
 var import_yargs_parser = __toModule(require("yargs-parser"));
 var import_fs12 = __toModule(require("fs"));
-var import_path14 = __toModule(require("path"));
+var import_path15 = __toModule(require("path"));
 var import_clear = __toModule(require("clear"));
-var import_chalk = __toModule(require("chalk"));
+var import_chalk2 = __toModule(require("chalk"));
 var import_figlet = __toModule(require("figlet"));
 
 // src/utils.ts
 var import_fs = __toModule(require("fs"));
 var import_path = __toModule(require("path"));
 var import_ncp = __toModule(require("ncp"));
-var COMMANDS = ["create", "generate"];
+var COMMANDS = ["create", "generate", "publish"];
 function getCmdAndOptions(args2) {
   const command = args2["_"];
   if (command && command.length > 0 && !COMMANDS.includes(command[0])) {
@@ -568,8 +568,8 @@ function getProjectType() {
 }
 
 // src/generate/index.ts
-async function generate(command) {
-  const [type, fileName] = command;
+async function generate(commands) {
+  const [type, fileName] = commands;
   if (isCamelCase(fileName)) {
     console.error("do not use camelCase, please use snake_case or kebab-case");
     return;
@@ -630,14 +630,336 @@ async function generate(command) {
   }
 }
 
+// src/publish/utils.ts
+var import_promises2 = __toModule(require("fs/promises"));
+var import_path14 = __toModule(require("path"));
+var import_execa3 = __toModule(require("execa"));
+var import_child_process = __toModule(require("child_process"));
+
+// src/publish/contants.ts
+var DEFAULT_CONFIG_FILE = "sre-rn-publish.config.js";
+
+// src/publish/utils.ts
+function buildApk() {
+  return new Promise((resolve) => {
+    var _a, _b;
+    const proc = (0, import_execa3.default)("gradlew assembleRelease", {
+      cwd: (0, import_path14.join)(process.cwd(), "android")
+    });
+    (_a = proc.stdout) == null ? void 0 : _a.pipe(process.stdout);
+    (_b = proc.stdout) == null ? void 0 : _b.on("close", () => {
+      resolve(null);
+    });
+  });
+}
+function fill(n) {
+  return n > 10 ? "" + n : "0" + n;
+}
+function getYMD() {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  return {
+    year: fill(year),
+    month: fill(month),
+    day: fill(day)
+  };
+}
+async function openApkDir() {
+  try {
+    await (0, import_execa3.default)(`explorer ${(0, import_path14.join)(process.cwd(), "android/app/build/outputs/apk/release").replace(/\//g, "\\")}`);
+    return;
+  } catch (e) {
+  }
+  try {
+    await (0, import_execa3.default)(`open ${(0, import_path14.join)(process.cwd(), "android/app/build/outputs/apk/release")}`);
+    return;
+  } catch (e) {
+  }
+}
+function getCurrentBranch() {
+  return new Promise((resolve, reject) => {
+    var _a, _b, _c;
+    const proc = (0, import_child_process.exec)("git branch", (err) => {
+      reject(err);
+    });
+    let currentBranch;
+    (_a = proc.stdout) == null ? void 0 : _a.on("data", (chunk) => {
+      const branch = chunk.split("\n").find((name) => name.includes("*"));
+      if (branch) {
+        currentBranch = branch.replace("* ", "");
+      }
+    });
+    (_b = proc.stderr) == null ? void 0 : _b.on("data", (chunk) => {
+      reject(chunk);
+    });
+    (_c = proc.stdout) == null ? void 0 : _c.on("close", () => {
+      resolve(currentBranch);
+    });
+  });
+}
+async function codePush(deploymentName, ownerName, appName, messagePrefix, message, getCustomizedCommand) {
+  var _a;
+  let command;
+  if (getCustomizedCommand) {
+    command = getCustomizedCommand({
+      deploymentName,
+      ownerName,
+      appName,
+      messagePrefix,
+      message
+    });
+  } else {
+    command = `appcenter codepush release-react -a ${ownerName}/${appName} -d ${deploymentName} --description "${messagePrefix} ${message}"`;
+  }
+  console.info("");
+  console.info("> " + command);
+  const proc = (0, import_child_process.exec)(command);
+  (_a = proc.stdout) == null ? void 0 : _a.pipe(process.stdout);
+}
+function isCodeUpToDate() {
+  return new Promise((resolve, reject) => {
+    var _a, _b, _c;
+    const proc = (0, import_child_process.exec)("git status");
+    let content = "";
+    (_a = proc.stdout) == null ? void 0 : _a.on("data", (chunk) => {
+      content += chunk;
+    });
+    (_b = proc.stderr) == null ? void 0 : _b.on("data", (chunk) => {
+      reject(chunk);
+    });
+    (_c = proc.stdout) == null ? void 0 : _c.on("close", () => {
+      resolve(content.includes("nothing to commit"));
+    });
+  });
+}
+async function cleanCodeChange() {
+  try {
+    await (0, import_execa3.default)("git checkout .");
+  } catch (e) {
+  }
+}
+async function copyApp(isTest) {
+  const apkPath = (0, import_path14.join)(process.cwd(), "android/app/build/outputs/apk/release");
+  const file = isTest ? "app-release.test.apk" : "app-release.prod.apk";
+  const command = `cp ${(0, import_path14.join)(apkPath, "app-release.apk")} ${(0, import_path14.join)(apkPath, file)}`;
+  console.info("");
+  console.info("> " + command);
+  await (0, import_execa3.default)(command);
+}
+async function writeBuildGradleFileByEnv(isTest, applicationId) {
+  if (!isTest) {
+    return;
+  }
+  const content = await (0, import_promises2.readFile)((0, import_path14.join)(process.cwd(), "android/app/build.gradle"), { encoding: "utf-8" });
+  await (0, import_promises2.writeFile)((0, import_path14.join)(process.cwd(), "android/app/build.gradle"), content.replace(`applicationId "${applicationId}"`, `applicationId "${applicationId}.test"`));
+}
+async function writeVersion(version, path6) {
+  console.info(`current version is: ${version}`);
+  console.info("");
+  await (0, import_promises2.writeFile)((0, import_path14.join)(process.cwd(), path6), `export const version = '${version}'`);
+}
+async function writeEnv(env, path6) {
+  await (0, import_promises2.writeFile)((0, import_path14.join)(process.cwd(), path6), `export const env = '${env}'`);
+}
+async function writeAppName(appName, toReplaceAppName) {
+  const filePath = (0, import_path14.join)(process.cwd(), "android/app/src/main/res/values/strings.xml");
+  const content = await (0, import_promises2.readFile)(filePath, { encoding: "utf-8" });
+  await (0, import_promises2.writeFile)(filePath, content.replace(toReplaceAppName, appName));
+}
+function getConfigFile(options) {
+  if (options.config) {
+    return (0, import_path14.join)(process.cwd(), options.config);
+  }
+  return (0, import_path14.join)(process.cwd(), DEFAULT_CONFIG_FILE);
+}
+
+// src/publish/types/react-native.ts
+var import_inquirer3 = __toModule(require("inquirer"));
+function mergeConfig({
+  shouldCleanCodeChange = true,
+  mode = "test",
+  shouldRewriteApplicationId = false,
+  applicationId = "",
+  generateVersion = false,
+  versionFilePath = "src/config",
+  extname = "ts",
+  generateEnv = false,
+  envFilePath = "src/config",
+  generateAppName = false,
+  codePush: codePush2 = false,
+  open = false,
+  shouldCopyApp = false,
+  onComplete
+} = {
+  shouldCleanCodeChange: true,
+  mode: "test",
+  shouldRewriteApplicationId: false,
+  applicationId: "",
+  generateVersion: false,
+  versionFilePath: "src/config",
+  extname: "ts",
+  generateEnv: false,
+  envFilePath: "src/config",
+  generateAppName: false,
+  codePush: false,
+  open: false,
+  shouldCopyApp: false
+}, options) {
+  var _a, _b, _c, _d, _e, _f, _g, _h;
+  return {
+    shouldCleanCodeChange: (_a = options.shouldCleanCodeChange) != null ? _a : shouldCleanCodeChange,
+    mode: (_b = options.mode) != null ? _b : mode,
+    shouldRewriteApplicationId,
+    applicationId,
+    generateVersion: options.generateVersion === false ? options.generateVersion : generateVersion,
+    versionFilePath: (_c = options.versionFilePath) != null ? _c : versionFilePath,
+    extname: (_d = options.extname) != null ? _d : extname,
+    generateEnv: options.generateEnv === false ? options.generateEnv : generateEnv,
+    envFilePath: (_e = options.envFilePath) != null ? _e : envFilePath,
+    generateAppName: options.generateAppName === false ? options.generateAppName : generateAppName,
+    codePush: options.codePush === false ? options.codePush : codePush2,
+    open: (_f = options.open) != null ? _f : open,
+    shouldCopyApp: (_g = options.shouldCopyApp) != null ? _g : shouldCopyApp,
+    message: (_h = options.m) != null ? _h : "",
+    onComplete
+  };
+}
+async function publishReactNative({
+  shouldCleanCodeChange,
+  mode,
+  shouldRewriteApplicationId,
+  applicationId,
+  generateVersion,
+  versionFilePath,
+  extname,
+  generateEnv,
+  envFilePath,
+  generateAppName,
+  codePush: codePush2,
+  open,
+  shouldCopyApp,
+  message,
+  onComplete
+}) {
+  try {
+    if (shouldCleanCodeChange) {
+      let isContinue = true;
+      try {
+        if (!await isCodeUpToDate()) {
+          const answers = await import_inquirer3.default.prompt([
+            {
+              type: "list",
+              name: "isContinue",
+              message: "\u68C0\u6D4B\u5230\u5F53\u524D\u4EE3\u7801\u6709\u672A\u63D0\u4EA4\u7684\uFF0C\u53D1\u5E03\u5B8C\u6210\u4E4B\u540E\u4F1A\u6267\u884C `git checkout .` \u6E05\u9664\u6240\u6709\u6539\u52A8\uFF0C\u8BF7\u786E\u8BA4\u662F\u5426\u7EE7\u7EED\uFF1F",
+              choices: ["\u662F", "\u5426"]
+            }
+          ]);
+          isContinue = answers.isContinue === "\u662F";
+        }
+      } catch (e) {
+      }
+      if (!isContinue) {
+        return;
+      }
+    }
+    if (!["ts", "js"].includes(extname)) {
+      return Promise.reject(`extname expected 'ts' or 'js', but received '${extname}'`);
+    }
+    let currentBranch;
+    try {
+      currentBranch = await getCurrentBranch();
+    } catch (e) {
+      currentBranch = "";
+    }
+    const modeRes = typeof mode === "function" ? mode(currentBranch) : mode;
+    if (!["test", "production"].includes(modeRes)) {
+      return Promise.reject(`mode expected 'test' or 'production', but received '${modeRes}'`);
+    }
+    const { year, month, day } = getYMD();
+    const isTest = modeRes === "test";
+    if (shouldRewriteApplicationId) {
+      if (!applicationId) {
+        return Promise.reject("when shouldRewriteApplicationId is true, applicationId is required");
+      }
+      writeBuildGradleFileByEnv(isTest, applicationId);
+    }
+    if (generateVersion) {
+      const version = generateVersion({ year, month, day, mode: modeRes });
+      await writeVersion(version, `${versionFilePath}/version.${extname}`);
+    }
+    if (generateEnv) {
+      const env = generateEnv(modeRes);
+      await writeEnv(env, `${envFilePath}/env.${extname}`);
+    }
+    if (generateAppName) {
+      const { appName, toReplaceAppName } = generateAppName(modeRes);
+      if (appName !== toReplaceAppName) {
+        await writeAppName(appName, toReplaceAppName);
+      }
+    }
+    await buildApk();
+    if (shouldCopyApp) {
+      await copyApp(isTest);
+    }
+    if (open) {
+      await openApkDir();
+    }
+    if (codePush2) {
+      const {
+        getCustomizedCommand,
+        getDeploymentName,
+        getMessagePrefix,
+        ownerName,
+        appName
+      } = codePush2;
+      const deploymentName = getDeploymentName == null ? void 0 : getDeploymentName(modeRes);
+      if (!deploymentName) {
+        return Promise.reject("when enable codePush, deploymentName is required");
+      }
+      const messagePrefix = (getMessagePrefix == null ? void 0 : getMessagePrefix({ year, month, day, mode: modeRes })) || "";
+      await codePush(deploymentName, ownerName, appName, messagePrefix, message, getCustomizedCommand);
+    }
+    if (shouldCleanCodeChange) {
+      await cleanCodeChange();
+    }
+    onComplete == null ? void 0 : onComplete(modeRes);
+  } catch (e) {
+    return Promise.reject(e);
+  }
+}
+
+// src/publish/index.ts
+var import_chalk = __toModule(require("chalk"));
+async function publish(commands, options) {
+  const [type] = commands;
+  switch (type) {
+    case "react-native": {
+      const configFile = getConfigFile(options);
+      const publishConfig = await Promise.resolve().then(() => __toModule(require(configFile)));
+      const config = mergeConfig(publishConfig, options);
+      publishReactNative(config).catch((e) => {
+        var _a;
+        console.info("");
+        console.info(import_chalk.default.red(`Error: ${(_a = e.message) != null ? _a : e}`));
+      });
+      break;
+    }
+    default: {
+      console.info(`publish type '${type}' not found`);
+    }
+  }
+}
+
 // src/index.ts
 var import_package = __toModule(require("../package.json"));
 var args = (0, import_yargs_parser.default)(process.argv.slice(2));
 function printHelp() {
-  console.info(import_fs12.default.readFileSync(import_path14.default.join(__dirname, "helps", "index.txt"), "utf-8"));
+  console.info(import_fs12.default.readFileSync(import_path15.default.join(__dirname, "helps", "index.txt"), "utf-8"));
 }
 function printGenerateHelp() {
-  console.info(import_fs12.default.readFileSync(import_path14.default.join(__dirname, "helps", "generate.txt"), "utf-8"));
+  console.info(import_fs12.default.readFileSync(import_path15.default.join(__dirname, "helps", "generate.txt"), "utf-8"));
 }
 function printVersion() {
   console.info(import_package.default.version);
@@ -645,15 +967,27 @@ function printVersion() {
 function main() {
   const { command, options } = getCmdAndOptions(args);
   if (command && command.length > 0) {
-    if (command[0] === "create") {
-      (0, import_clear.default)();
-      console.info(import_chalk.default.yellow(import_figlet.default.textSync("setup react env", { horizontalLayout: "full" })));
-      createReactProject(import_path14.default.join(__dirname, "../templetes"));
-    } else if (command[0] === "generate") {
-      if (options.help) {
-        printGenerateHelp();
-      } else {
-        generate(command.slice(1));
+    switch (command[0]) {
+      case "create": {
+        (0, import_clear.default)();
+        console.info(import_chalk2.default.yellow(import_figlet.default.textSync("setup react env", { horizontalLayout: "full" })));
+        createReactProject(import_path15.default.join(__dirname, "../templetes"));
+        break;
+      }
+      case "generate": {
+        if (options.help) {
+          printGenerateHelp();
+        } else {
+          generate(command.slice(1));
+        }
+        break;
+      }
+      case "publish": {
+        publish(command.slice(1), options);
+        break;
+      }
+      default: {
+        console.info(`command '${command[0]}' not found`);
       }
     }
   } else if (options.help) {

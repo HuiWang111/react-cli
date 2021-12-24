@@ -3,7 +3,7 @@ import ora from 'ora';
 import path from 'path';
 import ncp from 'ncp';
 
-const COMMANDS = ['create', 'generate']
+const COMMANDS = ['create', 'generate', 'publish']
 
 export function getCmdAndOptions(args: Record<string, any> & { _?: Array<string> }): {
     command: string[] | undefined,
