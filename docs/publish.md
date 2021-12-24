@@ -70,7 +70,7 @@ npm run publish -- -m "publish message"
 ```
 
 ## Configuration
-- shouldCleanCodeChange
+### shouldCleanCodeChange
 打包完成后是否执行 `git checkout .` 清空代码的改动
 由于打包过程中可能会有写入文件的操作造成代码的改动，而这些打包完成之后无需保留，此时可以设置该项为true
 
@@ -78,28 +78,28 @@ npm run publish -- -m "publish message"
 | ---- | ---- | ---- |
 | boolean | true | false |
 
-- mode
+### mode
 打正式包还是打测试包
 
 | type | default | required |
 | ---- | ---- | ---- |
 | `test` or `production` | none | false |
 
-- shouldRewriteApplicationId
+### shouldRewriteApplicationId
 是否重写applicationId，区分测试和生产环境的applicationId可以实现在同一台机器上同时安装测试版和正式版
 
 | type | default | required |
 | ---- | ---- | ---- |
 | boolean | false | false |
 
-- applicationId
+### applicationId
 当开启重写applicationId时，需要将目前applicationId传递进来；applicationId在 android/app/build.gradle 文件中
 
 | type | default | required |
 | ---- | ---- | ---- |
 | string | none | false |
 
-- generateVersion
+### generateVersion
 是否生成版本
 
 | type | default | required |
@@ -117,21 +117,21 @@ export interface GenerateVersionParams {
 }
 ```
 
-- versionFilePath
+### versionFilePath
 版本号写入文件的路径
 
 | type | default | required |
 | ---- | ---- | ---- |
 | string | `src/config` | false |
 
-- extname
+### extname
 写入文件的拓展名
 
 | type | default | required |
 | ---- | ---- | ---- |
 | `ts` or `js` | `ts` | false |
 
-- generateEnv
+### generateEnv
 是否生成环境变量
 
 | type | default | required |
@@ -141,14 +141,14 @@ export interface GenerateVersionParams {
 type GenerateEnvCallback = (mode: PublishMode) => string;
 ```
 
-- envFilePath
+### envFilePath
 环境变量写入文件的路径
 
 | type | default | required |
 | ---- | ---- | ---- |
 | string | `src/config` | false |
 
-- generateAppName
+### generateAppName
 是否重写app安装后的显示名称，常用于安装后区分测试版还是正式版
 
 | type | default | required |
@@ -163,7 +163,7 @@ interface GenerateAppNameCallbackReturn {
 type GenerateAppNameCallback = (mode: PublishMode) => GenerateAppNameCallbackReturn;
 ```
 
-- codePush
+### codePush
 打包完成后是否自动 codepush
 
 | type | default | required |
@@ -189,14 +189,14 @@ interface CodePushOptions {
 }
 ```
 
-- open
+### open
 打包发布完成之后是否自动打开apk所在文件夹
 
 | type | default | required |
 | ---- | ---- | ---- |
 | boolean | false | false |
 
-- shouldCopyApp
+### shouldCopyApp
 打包完成后是否自动复制一个apk文件。
 test模式会复制一个名为 app-release.test.apk，production 模式会复制一个名为 app-release.prod.apk；
 
@@ -204,9 +204,20 @@ test模式会复制一个名为 app-release.test.apk，production 模式会复�
 | ---- | ---- | ---- |
 | boolean | false | false |
 
-- onComplete
+### onComplete
 打包发布完成之后的回调
 
 | type | default | required |
 | ---- | ---- | ---- |
 | (mode: PublishMode) => void | false | false |
+
+### Options
+```bash
+sre publish react-native -- m "pusblish message"
+```
+指定发布热更时的 description
+
+```bash
+sre publish react-native --config ./pulish.config.js
+```
+指定配置文件，覆盖默认配置文件
