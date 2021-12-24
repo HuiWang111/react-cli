@@ -38,9 +38,11 @@ export function getYMD() {
 
 export async function openApkDir() {
     try {
+        // windows
         await execa(`explorer ${join(process.cwd(), 'android/app/build/outputs/apk/release').replace(/\//g, '\\')}`)
     } catch (e) {
-        // do nothing
+        // macos
+        await execa(`open ${join(process.cwd(), 'android/app/build/outputs/apk/release')}`)
     }
 }
 
@@ -70,7 +72,7 @@ export function getCurrentBranch(): Promise<string> {
 }
 
 export async function codePush(
-    deploymentKey: string,
+    deploymentName: string,
     ownerName: string,
     appName: string,
     messagePrefix: string,
@@ -80,17 +82,19 @@ export async function codePush(
     let command: string
     if (getCustomizedCommand) {
         command = getCustomizedCommand({
-            deploymentKey,
+            deploymentName,
             ownerName,
             appName,
             messagePrefix,
             message
         })
     } else {
-        command = `appcenter codepush release-react -a ${ownerName}/${appName} -d ${deploymentKey} --description "${messagePrefix} ${message}"`
+        command = `appcenter codepush release-react -a ${ownerName}/${appName} -d ${deploymentName} --description "${messagePrefix} ${message}"`
     }
+    console.info('')
     console.info('> ' + command)
-    await exec(command)
+    const proc = exec(command)
+    proc.stdout?.pipe(process.stdout)
 }
 
 /**
@@ -129,8 +133,11 @@ export async function copyApp(isTest: boolean) {
     const file = isTest
         ? 'app-release.test.apk'
         : 'app-release.prod.apk'
+    const command = `cp ${join(apkPath, 'app-release.apk')} ${join(apkPath, file)}`
 
-    await execa(`cp ${join(apkPath, 'app-release.apk')} ${join(apkPath, file)}`)
+    console.info('')
+    console.info('> ' + command)
+    await execa(command)
 }
 
 /**

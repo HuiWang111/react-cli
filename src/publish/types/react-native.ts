@@ -166,15 +166,20 @@ export async function publishReactNative({
         currentBranch = ''
     }
 
-    const { year, month, day } = getYMD()
     const modeRes: PublishMode = typeof mode === 'function'
         ? mode(currentBranch)
         : mode
+    if (!['test', 'production'].includes(modeRes)) {
+        Promise.reject("mode must be 'test' or 'production'")
+        return
+    }
+
+    const { year, month, day } = getYMD()
     const isTest: boolean = modeRes === 'test'
 
     if (shouldRewriteApplicationId) {
         if (!applicationId) {
-            Promise.reject(new Error('when shouldRewriteApplicationId is true, applicationId is required'))
+            Promise.reject('when shouldRewriteApplicationId is true, applicationId is required')
             return
         }
 
@@ -211,22 +216,22 @@ export async function publishReactNative({
     if (codePush) {
         const {
             getCustomizedCommand,
-            getDeploymentKey,
+            getDeploymentName,
             getMessagePrefix,
             ownerName,
             appName
         } = codePush
 
-        const deploymentKey = getDeploymentKey?.(modeRes)
-        if (!deploymentKey) {
-            Promise.reject(new Error('when enable codePush, deploymentKey is required'))
+        const deploymentName = getDeploymentName?.(modeRes)
+        if (!deploymentName) {
+            Promise.reject('when enable codePush, deploymentName is required')
             return
         }
 
         const messagePrefix = getMessagePrefix?.({ year, month, day, mode: modeRes }) || ''
 
         await runCodePush(
-            deploymentKey,
+            deploymentName,
             ownerName,
             appName,
             messagePrefix,

@@ -37,7 +37,7 @@ var import_yargs_parser = __toModule(require("yargs-parser"));
 var import_fs12 = __toModule(require("fs"));
 var import_path15 = __toModule(require("path"));
 var import_clear = __toModule(require("clear"));
-var import_chalk = __toModule(require("chalk"));
+var import_chalk2 = __toModule(require("chalk"));
 var import_figlet = __toModule(require("figlet"));
 
 // src/utils.ts
@@ -670,6 +670,7 @@ async function openApkDir() {
   try {
     await (0, import_execa3.default)(`explorer ${(0, import_path14.join)(process.cwd(), "android/app/build/outputs/apk/release").replace(/\//g, "\\")}`);
   } catch (e) {
+    await (0, import_execa3.default)(`open ${(0, import_path14.join)(process.cwd(), "android/app/build/outputs/apk/release")}`);
   }
 }
 function getCurrentBranch() {
@@ -693,21 +694,24 @@ function getCurrentBranch() {
     });
   });
 }
-async function codePush(deploymentKey, ownerName, appName, messagePrefix, message, getCustomizedCommand) {
+async function codePush(deploymentName, ownerName, appName, messagePrefix, message, getCustomizedCommand) {
+  var _a;
   let command;
   if (getCustomizedCommand) {
     command = getCustomizedCommand({
-      deploymentKey,
+      deploymentName,
       ownerName,
       appName,
       messagePrefix,
       message
     });
   } else {
-    command = `appcenter codepush release-react -a ${ownerName}/${appName} -d ${deploymentKey} --description "${messagePrefix} ${message}"`;
+    command = `appcenter codepush release-react -a ${ownerName}/${appName} -d ${deploymentName} --description "${messagePrefix} ${message}"`;
   }
+  console.info("");
   console.info("> " + command);
-  await (0, import_child_process.exec)(command);
+  const proc = (0, import_child_process.exec)(command);
+  (_a = proc.stdout) == null ? void 0 : _a.pipe(process.stdout);
 }
 function isCodeUpToDate() {
   return new Promise((resolve, reject) => {
@@ -734,7 +738,10 @@ async function cleanCodeChange() {
 async function copyApp(isTest) {
   const apkPath = (0, import_path14.join)(process.cwd(), "android/app/build/outputs/apk/release");
   const file = isTest ? "app-release.test.apk" : "app-release.prod.apk";
-  await (0, import_execa3.default)(`cp ${(0, import_path14.join)(apkPath, "app-release.apk")} ${(0, import_path14.join)(apkPath, file)}`);
+  const command = `cp ${(0, import_path14.join)(apkPath, "app-release.apk")} ${(0, import_path14.join)(apkPath, file)}`;
+  console.info("");
+  console.info("> " + command);
+  await (0, import_execa3.default)(command);
 }
 async function writeBuildGradleFileByEnv(isTest, applicationId) {
   if (!isTest) {
@@ -856,12 +863,16 @@ async function publishReactNative({
   } catch (e) {
     currentBranch = "";
   }
-  const { year, month, day } = getYMD();
   const modeRes = typeof mode === "function" ? mode(currentBranch) : mode;
+  if (!["test", "production"].includes(modeRes)) {
+    Promise.reject("mode must be 'test' or 'production'");
+    return;
+  }
+  const { year, month, day } = getYMD();
   const isTest = modeRes === "test";
   if (shouldRewriteApplicationId) {
     if (!applicationId) {
-      Promise.reject(new Error("when shouldRewriteApplicationId is true, applicationId is required"));
+      Promise.reject("when shouldRewriteApplicationId is true, applicationId is required");
       return;
     }
     writeBuildGradleFileByEnv(isTest, applicationId);
@@ -890,18 +901,18 @@ async function publishReactNative({
   if (codePush2) {
     const {
       getCustomizedCommand,
-      getDeploymentKey,
+      getDeploymentName,
       getMessagePrefix,
       ownerName,
       appName
     } = codePush2;
-    const deploymentKey = getDeploymentKey == null ? void 0 : getDeploymentKey(modeRes);
-    if (!deploymentKey) {
-      Promise.reject(new Error("when enable codePush, deploymentKey is required"));
+    const deploymentName = getDeploymentName == null ? void 0 : getDeploymentName(modeRes);
+    if (!deploymentName) {
+      Promise.reject("when enable codePush, deploymentName is required");
       return;
     }
     const messagePrefix = (getMessagePrefix == null ? void 0 : getMessagePrefix({ year, month, day, mode: modeRes })) || "";
-    await codePush(deploymentKey, ownerName, appName, messagePrefix, message, getCustomizedCommand);
+    await codePush(deploymentName, ownerName, appName, messagePrefix, message, getCustomizedCommand);
   }
   if (shouldCleanCodeChange) {
     await cleanCodeChange();
@@ -910,14 +921,20 @@ async function publishReactNative({
 }
 
 // src/publish/index.ts
+var import_chalk = __toModule(require("chalk"));
 async function publish(commands, options) {
+  var _a;
   const [type] = commands;
   switch (type) {
     case "react-native": {
-      const configFile = getConfigFile(options);
-      const publishConfig = await Promise.resolve().then(() => __toModule(require(configFile)));
-      const config = mergeConfig(publishConfig, options.m);
-      await publishReactNative(config);
+      try {
+        const configFile = getConfigFile(options);
+        const publishConfig = await Promise.resolve().then(() => __toModule(require(configFile)));
+        const config = mergeConfig(publishConfig, options.m);
+        await publishReactNative(config);
+      } catch (e) {
+        console.info(import_chalk.default.red((_a = e.message) != null ? _a : e));
+      }
       break;
     }
     default: {
@@ -944,7 +961,7 @@ function main() {
     switch (command[0]) {
       case "create": {
         (0, import_clear.default)();
-        console.info(import_chalk.default.yellow(import_figlet.default.textSync("setup react env", { horizontalLayout: "full" })));
+        console.info(import_chalk2.default.yellow(import_figlet.default.textSync("setup react env", { horizontalLayout: "full" })));
         createReactProject(import_path15.default.join(__dirname, "../templetes"));
         break;
       }

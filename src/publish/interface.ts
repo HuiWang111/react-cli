@@ -4,9 +4,9 @@ export type GenerateVersionCallback = (params: GenerateVersionParams) => string;
 export type GenerateEnvCallback = (mode: PublishMode) => string;
 export type GenerateAppNameCallback = (mode: PublishMode) => GenerateAppNameCallbackReturn;
 export type GetMessagePrefixCallback = (params: GenerateVersionParams) => string;
-export type GetDeploymentKeyCallback = (mode: PublishMode) => string;
+export type GetDeploymentNameCallback = (mode: PublishMode) => string;
 export type GetCustomizedCommandCallback = (params: {
-    deploymentKey: string,
+    deploymentName: string,
     ownerName: string,
     appName: string,
     messagePrefix: string,
@@ -23,7 +23,7 @@ export interface GenerateVersionParams {
 export interface CodePushOptions {
     getCustomizedCommand?: GetCustomizedCommandCallback;
     getMessagePrefix?: GetMessagePrefixCallback;
-    getDeploymentKey: GetDeploymentKeyCallback;
+    getDeploymentName: GetDeploymentNameCallback;
     ownerName: string;
     appName: string;
 }
