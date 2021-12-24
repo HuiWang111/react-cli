@@ -40,9 +40,17 @@ export async function openApkDir() {
     try {
         // windows
         await execa(`explorer ${join(process.cwd(), 'android/app/build/outputs/apk/release').replace(/\//g, '\\')}`)
-    } catch (e) {
+        return
+    } catch(e) {
+        // do nothing
+    }
+
+    try {
         // macos
         await execa(`open ${join(process.cwd(), 'android/app/build/outputs/apk/release')}`)
+        return
+    } catch (e) {
+        // do nothing
     }
 }
 
@@ -186,7 +194,7 @@ export async function writeAppName(appName: string, toReplaceAppName: string) {
     )
 }
 
-export function getConfigFile(options: Record<string, string>) {
+export function getConfigFile(options: Record<string, any>) {
     if (options.config) {
         return join(process.cwd(), options.config)
     }

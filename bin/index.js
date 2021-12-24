@@ -669,8 +669,13 @@ function getYMD() {
 async function openApkDir() {
   try {
     await (0, import_execa3.default)(`explorer ${(0, import_path14.join)(process.cwd(), "android/app/build/outputs/apk/release").replace(/\//g, "\\")}`);
+    return;
   } catch (e) {
+  }
+  try {
     await (0, import_execa3.default)(`open ${(0, import_path14.join)(process.cwd(), "android/app/build/outputs/apk/release")}`);
+    return;
+  } catch (e) {
   }
 }
 function getCurrentBranch() {
@@ -801,22 +806,23 @@ function mergeConfig({
   codePush: false,
   open: false,
   shouldCopyApp: false
-}, message = "") {
+}, options) {
+  var _a, _b, _c, _d, _e, _f, _g, _h;
   return {
-    shouldCleanCodeChange,
-    mode,
+    shouldCleanCodeChange: (_a = options.shouldCleanCodeChange) != null ? _a : shouldCleanCodeChange,
+    mode: (_b = options.mode) != null ? _b : mode,
     shouldRewriteApplicationId,
     applicationId,
-    generateVersion,
-    versionFilePath,
-    extname,
-    generateEnv,
-    envFilePath,
-    generateAppName,
-    codePush: codePush2,
-    open,
-    shouldCopyApp,
-    message,
+    generateVersion: options.generateVersion === false ? options.generateVersion : generateVersion,
+    versionFilePath: (_c = options.versionFilePath) != null ? _c : versionFilePath,
+    extname: (_d = options.extname) != null ? _d : extname,
+    generateEnv: options.generateEnv === false ? options.generateEnv : generateEnv,
+    envFilePath: (_e = options.envFilePath) != null ? _e : envFilePath,
+    generateAppName: options.generateAppName === false ? options.generateAppName : generateAppName,
+    codePush: options.codePush === false ? options.codePush : codePush2,
+    open: (_f = options.open) != null ? _f : open,
+    shouldCopyApp: (_g = options.shouldCopyApp) != null ? _g : shouldCopyApp,
+    message: (_h = options.m) != null ? _h : "",
     onComplete
   };
 }
@@ -837,104 +843,107 @@ async function publishReactNative({
   message,
   onComplete
 }) {
-  if (shouldCleanCodeChange) {
-    let isContinue = true;
-    try {
-      if (!await isCodeUpToDate()) {
-        const answers = await import_inquirer3.default.prompt([
-          {
-            type: "list",
-            name: "isContinue",
-            message: "\u68C0\u6D4B\u5230\u5F53\u524D\u4EE3\u7801\u6709\u672A\u63D0\u4EA4\u7684\uFF0C\u53D1\u5E03\u5B8C\u6210\u4E4B\u540E\u4F1A\u6267\u884C `git checkout .` \u6E05\u9664\u6240\u6709\u6539\u52A8\uFF0C\u8BF7\u786E\u8BA4\u662F\u5426\u7EE7\u7EED\uFF1F",
-            choices: ["\u662F", "\u5426"]
-          }
-        ]);
-        isContinue = answers.isContinue === "\u662F";
-      }
-    } catch (e) {
-    }
-    if (!isContinue) {
-      return;
-    }
-  }
-  let currentBranch;
   try {
-    currentBranch = await getCurrentBranch();
+    if (shouldCleanCodeChange) {
+      let isContinue = true;
+      try {
+        if (!await isCodeUpToDate()) {
+          const answers = await import_inquirer3.default.prompt([
+            {
+              type: "list",
+              name: "isContinue",
+              message: "\u68C0\u6D4B\u5230\u5F53\u524D\u4EE3\u7801\u6709\u672A\u63D0\u4EA4\u7684\uFF0C\u53D1\u5E03\u5B8C\u6210\u4E4B\u540E\u4F1A\u6267\u884C `git checkout .` \u6E05\u9664\u6240\u6709\u6539\u52A8\uFF0C\u8BF7\u786E\u8BA4\u662F\u5426\u7EE7\u7EED\uFF1F",
+              choices: ["\u662F", "\u5426"]
+            }
+          ]);
+          isContinue = answers.isContinue === "\u662F";
+        }
+      } catch (e) {
+      }
+      if (!isContinue) {
+        return;
+      }
+    }
+    if (!["ts", "js"].includes(extname)) {
+      return Promise.reject(`extname expected 'ts' or 'js', but received '${extname}'`);
+    }
+    let currentBranch;
+    try {
+      currentBranch = await getCurrentBranch();
+    } catch (e) {
+      currentBranch = "";
+    }
+    const modeRes = typeof mode === "function" ? mode(currentBranch) : mode;
+    if (!["test", "production"].includes(modeRes)) {
+      return Promise.reject(`mode expected 'test' or 'production', but received '${modeRes}'`);
+    }
+    const { year, month, day } = getYMD();
+    const isTest = modeRes === "test";
+    if (shouldRewriteApplicationId) {
+      if (!applicationId) {
+        return Promise.reject("when shouldRewriteApplicationId is true, applicationId is required");
+      }
+      writeBuildGradleFileByEnv(isTest, applicationId);
+    }
+    if (generateVersion) {
+      const version = generateVersion({ year, month, day, mode: modeRes });
+      await writeVersion(version, `${versionFilePath}/version.${extname}`);
+    }
+    if (generateEnv) {
+      const env = generateEnv(modeRes);
+      await writeEnv(env, `${envFilePath}/env.${extname}`);
+    }
+    if (generateAppName) {
+      const { appName, toReplaceAppName } = generateAppName(modeRes);
+      if (appName !== toReplaceAppName) {
+        await writeAppName(appName, toReplaceAppName);
+      }
+    }
+    await buildApk();
+    if (shouldCopyApp) {
+      await copyApp(isTest);
+    }
+    if (open) {
+      await openApkDir();
+    }
+    if (codePush2) {
+      const {
+        getCustomizedCommand,
+        getDeploymentName,
+        getMessagePrefix,
+        ownerName,
+        appName
+      } = codePush2;
+      const deploymentName = getDeploymentName == null ? void 0 : getDeploymentName(modeRes);
+      if (!deploymentName) {
+        return Promise.reject("when enable codePush, deploymentName is required");
+      }
+      const messagePrefix = (getMessagePrefix == null ? void 0 : getMessagePrefix({ year, month, day, mode: modeRes })) || "";
+      await codePush(deploymentName, ownerName, appName, messagePrefix, message, getCustomizedCommand);
+    }
+    if (shouldCleanCodeChange) {
+      await cleanCodeChange();
+    }
+    onComplete == null ? void 0 : onComplete(modeRes);
   } catch (e) {
-    currentBranch = "";
+    return Promise.reject(e);
   }
-  const modeRes = typeof mode === "function" ? mode(currentBranch) : mode;
-  if (!["test", "production"].includes(modeRes)) {
-    Promise.reject("mode must be 'test' or 'production'");
-    return;
-  }
-  const { year, month, day } = getYMD();
-  const isTest = modeRes === "test";
-  if (shouldRewriteApplicationId) {
-    if (!applicationId) {
-      Promise.reject("when shouldRewriteApplicationId is true, applicationId is required");
-      return;
-    }
-    writeBuildGradleFileByEnv(isTest, applicationId);
-  }
-  if (generateVersion) {
-    const version = generateVersion({ year, month, day, mode: modeRes });
-    await writeVersion(version, `${versionFilePath}/version.${extname}`);
-  }
-  if (generateEnv) {
-    const env = generateEnv(modeRes);
-    writeEnv(env, `${envFilePath}/env.${extname}`);
-  }
-  if (generateAppName) {
-    const { appName, toReplaceAppName } = generateAppName(modeRes);
-    if (appName !== toReplaceAppName) {
-      writeAppName(appName, toReplaceAppName);
-    }
-  }
-  await buildApk();
-  if (shouldCopyApp) {
-    await copyApp(isTest);
-  }
-  if (open) {
-    await openApkDir();
-  }
-  if (codePush2) {
-    const {
-      getCustomizedCommand,
-      getDeploymentName,
-      getMessagePrefix,
-      ownerName,
-      appName
-    } = codePush2;
-    const deploymentName = getDeploymentName == null ? void 0 : getDeploymentName(modeRes);
-    if (!deploymentName) {
-      Promise.reject("when enable codePush, deploymentName is required");
-      return;
-    }
-    const messagePrefix = (getMessagePrefix == null ? void 0 : getMessagePrefix({ year, month, day, mode: modeRes })) || "";
-    await codePush(deploymentName, ownerName, appName, messagePrefix, message, getCustomizedCommand);
-  }
-  if (shouldCleanCodeChange) {
-    await cleanCodeChange();
-  }
-  onComplete == null ? void 0 : onComplete(modeRes);
 }
 
 // src/publish/index.ts
 var import_chalk = __toModule(require("chalk"));
 async function publish(commands, options) {
-  var _a;
   const [type] = commands;
   switch (type) {
     case "react-native": {
-      try {
-        const configFile = getConfigFile(options);
-        const publishConfig = await Promise.resolve().then(() => __toModule(require(configFile)));
-        const config = mergeConfig(publishConfig, options.m);
-        await publishReactNative(config);
-      } catch (e) {
-        console.info(import_chalk.default.red((_a = e.message) != null ? _a : e));
-      }
+      const configFile = getConfigFile(options);
+      const publishConfig = await Promise.resolve().then(() => __toModule(require(configFile)));
+      const config = mergeConfig(publishConfig, options);
+      publishReactNative(config).catch((e) => {
+        var _a;
+        console.info("");
+        console.info(import_chalk.default.red(`Error: ${(_a = e.message) != null ? _a : e}`));
+      });
       break;
     }
     default: {

@@ -28,12 +28,15 @@ sre --help
 ```
 
 ### generate
-[auto generate file](https://github.com/HuiWang111/setup-react-env/blob/main/docs/command.md)
+[how to use generate command](https://github.com/HuiWang111/setup-react-env/blob/main/docs/generate.md)
+
+### publish
+[how to use publish command](https://github.com/HuiWang111/setup-react-env/blob/main/docs/publish.md)
 
 ## TODOS
 - [x] 模板增加基本的hook，如`useMount`等
 - [x] create 命令改成选择模板
-- [ ] 增加generate命令，自动生成文件
+- [x] 增加generate命令，自动生成文件
     - [x] `sre generate store [storeName]`
     - [x] `sre generate view [viewName]`
     - [x] `sre generate style [styleName]`
