@@ -213,7 +213,7 @@ test模式会复制一个名为 app-release.test.apk，production 模式会复�
 
 ## Options
 ```bash
-sre publish react-native -- m "pusblish message"
+sre publish react-native --m "pusblish message"
 ```
 指定发布热更时的 description
 
