@@ -883,7 +883,7 @@ async function publishReactNative({
       if (!applicationId) {
         return Promise.reject("when shouldRewriteApplicationId is true, applicationId is required");
       }
-      writeBuildGradleFileByEnv(isTest, applicationId);
+      await writeBuildGradleFileByEnv(isTest, applicationId);
     }
     if (generateVersion) {
       const version = generateVersion({ year, month, day, mode: modeRes });
