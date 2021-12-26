@@ -47,7 +47,15 @@ module.exports = {
                 : 'Production'
         },
         ownerName: 'scmc',
-        appName: 'finish-goods'
+        appName: 'finish-goods',
+        /**
+         * 默认使用最新的 appcenter codepush ... 命令
+         * 如果使用的旧版本的codepush可以用这个函数返回一个命令
+         * 具体用法见下方文档
+         */
+        getCustomizedCommand: () => {
+            return ...
+        }
     },
     shouldCopyApp: true
 }
