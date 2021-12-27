@@ -16,6 +16,7 @@ touch sre-rn-publish.config.js
 // sre-rn-publish.config.js
 module.exports = {
     shouldCleanCodeChange: true,
+    // 根据当前分支来决定发布正式还是发布测试
     mode: (currentBranch) => {
         return currentBranch === 'production'
             ? 'production'
@@ -23,12 +24,15 @@ module.exports = {
     },
     shouldRewriteApplicationId: true,
     applicationId: 'com.fgnewapp',
+    // 通过当前日期来生产版本号
     generateVersion: ({ year, month, day }) => {
         return `C1.${year.slice(2)}.${month}.${day}`
     },
+    // 生成环境变量
     generateEnv: (mode) => {
         return mode
     },
+    // 根据环境变量生成不同的appName（安装后显示的名称）
     generateAppName: (mode) => {
         return {
             appName: mode === 'test'
