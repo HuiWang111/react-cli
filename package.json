@@ -1,6 +1,6 @@
 {
     "name": "setup-react-env",
-    "version": "2.3.0",
+    "version": "2.3.1",
     "description": "react脚手架",
     "repository": {
         "type": "git",
@@ -55,7 +55,15 @@
     "files": [
         "package.json",
         "bin",
-        "templetes",
+        "templetes/react-ts-mobx-webpack",
+        "templetes/react-ts-redux-webpack",
+        "templetes/react-native-mobx/scripts",
+        "templetes/react-native-mobx/src",
+        "templetes/react-native-mobx/.eslintrc.js",
+        "templetes/react-native-mobx/.eslintignore",
+        "templetes/react-native-mobx/babel.config.js",
+        "templetes/react-native-mobx/tsconfig.json",
+        "templetes/react-native-mobx/index.js",
         "README.md"
     ]
 }
