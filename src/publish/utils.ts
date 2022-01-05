@@ -5,16 +5,20 @@ import { exec } from 'child_process'
 import { DEFAULT_CONFIG_FILE } from './contants'
 import { GetCustomizedCommandCallback } from './interface'
 
-export function buildApk() {
-    return new Promise((resolve) => {
+export function buildApk(): Promise<void> {
+    return new Promise((resolve, reject) => {
         const proc = execa('gradlew assembleRelease', {
             cwd: join(process.cwd(), 'android')
         })
 
         proc.stdout?.pipe(process.stdout)
 
+        proc.stderr?.on('data', chunk => {
+            reject(chunk)
+        })
+
         proc.stdout?.on('close', () => {
-            resolve(null)
+            resolve()
         })
     })
 }
@@ -57,7 +61,9 @@ export async function openApkDir() {
 export function getCurrentBranch(): Promise<string> {
     return new Promise((resolve, reject) => {
         const proc = exec('git branch', (err) => {
-            reject(err)
+            if (err) {
+                reject(err)
+            }
         })
         let currentBranch
     
@@ -79,30 +85,40 @@ export function getCurrentBranch(): Promise<string> {
     })
 }
 
-export async function codePush(
+export function codePush(
     deploymentName: string,
     ownerName: string,
     appName: string,
     messagePrefix: string,
     message: string,
     getCustomizedCommand?: GetCustomizedCommandCallback
-) {
-    let command: string
-    if (getCustomizedCommand) {
-        command = getCustomizedCommand({
-            deploymentName,
-            ownerName,
-            appName,
-            messagePrefix,
-            message
+): Promise<void> {
+    return new Promise((resolve, reject) => {
+        let command: string
+        if (getCustomizedCommand) {
+            command = getCustomizedCommand({
+                deploymentName,
+                ownerName,
+                appName,
+                messagePrefix,
+                message
+            })
+        } else {
+            command = `appcenter codepush release-react -a ${ownerName}/${appName} -d ${deploymentName} --description "${messagePrefix} ${message}"`
+        }
+        console.info('')
+        console.info('> ' + command)
+        const proc = exec(command)
+        
+        proc.stderr?.on('data', chunk => {
+            reject(chunk)
         })
-    } else {
-        command = `appcenter codepush release-react -a ${ownerName}/${appName} -d ${deploymentName} --description "${messagePrefix} ${message}"`
-    }
-    console.info('')
-    console.info('> ' + command)
-    const proc = exec(command)
-    proc.stdout?.pipe(process.stdout)
+
+        proc.stdout?.on('close', () => {
+            resolve()
+        })
+        proc.stdout?.pipe(process.stdout)
+    })
 }
 
 /**

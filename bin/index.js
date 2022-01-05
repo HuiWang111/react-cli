@@ -641,14 +641,17 @@ var DEFAULT_CONFIG_FILE = "sre-rn-publish.config.js";
 
 // src/publish/utils.ts
 function buildApk() {
-  return new Promise((resolve) => {
-    var _a, _b;
+  return new Promise((resolve, reject) => {
+    var _a, _b, _c;
     const proc = (0, import_execa3.default)("gradlew assembleRelease", {
       cwd: (0, import_path14.join)(process.cwd(), "android")
     });
     (_a = proc.stdout) == null ? void 0 : _a.pipe(process.stdout);
-    (_b = proc.stdout) == null ? void 0 : _b.on("close", () => {
-      resolve(null);
+    (_b = proc.stderr) == null ? void 0 : _b.on("data", (chunk) => {
+      reject(chunk);
+    });
+    (_c = proc.stdout) == null ? void 0 : _c.on("close", () => {
+      resolve();
     });
   });
 }
@@ -682,7 +685,9 @@ function getCurrentBranch() {
   return new Promise((resolve, reject) => {
     var _a, _b, _c;
     const proc = (0, import_child_process.exec)("git branch", (err) => {
-      reject(err);
+      if (err) {
+        reject(err);
+      }
     });
     let currentBranch;
     (_a = proc.stdout) == null ? void 0 : _a.on("data", (chunk) => {
@@ -699,24 +704,32 @@ function getCurrentBranch() {
     });
   });
 }
-async function codePush(deploymentName, ownerName, appName, messagePrefix, message, getCustomizedCommand) {
-  var _a;
-  let command;
-  if (getCustomizedCommand) {
-    command = getCustomizedCommand({
-      deploymentName,
-      ownerName,
-      appName,
-      messagePrefix,
-      message
+function codePush(deploymentName, ownerName, appName, messagePrefix, message, getCustomizedCommand) {
+  return new Promise((resolve, reject) => {
+    var _a, _b, _c;
+    let command;
+    if (getCustomizedCommand) {
+      command = getCustomizedCommand({
+        deploymentName,
+        ownerName,
+        appName,
+        messagePrefix,
+        message
+      });
+    } else {
+      command = `appcenter codepush release-react -a ${ownerName}/${appName} -d ${deploymentName} --description "${messagePrefix} ${message}"`;
+    }
+    console.info("");
+    console.info("> " + command);
+    const proc = (0, import_child_process.exec)(command);
+    (_a = proc.stderr) == null ? void 0 : _a.on("data", (chunk) => {
+      reject(chunk);
     });
-  } else {
-    command = `appcenter codepush release-react -a ${ownerName}/${appName} -d ${deploymentName} --description "${messagePrefix} ${message}"`;
-  }
-  console.info("");
-  console.info("> " + command);
-  const proc = (0, import_child_process.exec)(command);
-  (_a = proc.stdout) == null ? void 0 : _a.pipe(process.stdout);
+    (_b = proc.stdout) == null ? void 0 : _b.on("close", () => {
+      resolve();
+    });
+    (_c = proc.stdout) == null ? void 0 : _c.pipe(process.stdout);
+  });
 }
 function isCodeUpToDate() {
   return new Promise((resolve, reject) => {
