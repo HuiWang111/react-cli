@@ -35,3 +35,9 @@ sre --help
 
 ## TODOS
 - [ ] 增加templete命令，可以将本机的文件夹作为templete加入的脚手架中
+- [ ] react-native-mobx模板更新点
+    - [ ] 增加 `utils/prompt.tsx` (考虑是否组件库直接兼容支持传字符串)
+    - [x] httpUtils 增加loading效果及其他更新
+    - [x] 增加 `useRouterState` hook
+    - [x] consts中增加Toast时间常量
+    
