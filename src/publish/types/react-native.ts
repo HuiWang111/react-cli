@@ -29,6 +29,7 @@ export function mergeConfig({
     codePush = false,
     open = false,
     shouldCopyApp = false,
+    shouldBuildApp = true,
     onComplete
 }: PublishConfig = {
     shouldCleanCodeChange: true,
@@ -43,7 +44,8 @@ export function mergeConfig({
     generateAppName: false,
     codePush: false,
     open: false,
-    shouldCopyApp: false
+    shouldCopyApp: false,
+    shouldBuildApp: true
 }, options: Record<string, any>): InternalPublishConfig {
     return {
         /**
@@ -107,6 +109,10 @@ export function mergeConfig({
          */
         shouldCopyApp: options.shouldCopyApp ?? shouldCopyApp,
         /**
+         * 是否打包app，注：发布热更可以不打包app
+         */
+        shouldBuildApp: options.shouldBuildApp ?? shouldBuildApp,
+        /**
          * 热更时显示的更新信息
          */
         message: options.m ?? '',
@@ -131,6 +137,7 @@ export async function publishReactNative({
     codePush,
     open,
     shouldCopyApp,
+    shouldBuildApp,
     message,
     onComplete
 }: InternalPublishConfig) {
@@ -206,8 +213,10 @@ export async function publishReactNative({
                 await writeAppName(appName, toReplaceAppName)
             }
         }
-    
-        await buildApk()
+        
+        if (shouldBuildApp) {
+            await buildApk()
+        }
     
         if (shouldCopyApp) {
             await copyApp(isTest)
