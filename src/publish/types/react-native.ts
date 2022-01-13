@@ -29,7 +29,7 @@ export function mergeConfig({
     codePush = false,
     open = false,
     shouldCopyApp = false,
-    shouldBuildApp = true,
+    buildApp = true,
     onComplete
 }: PublishConfig = {
     shouldCleanCodeChange: true,
@@ -45,7 +45,7 @@ export function mergeConfig({
     codePush: false,
     open: false,
     shouldCopyApp: false,
-    shouldBuildApp: true
+    buildApp: true
 }, options: Record<string, any>): InternalPublishConfig {
     return {
         /**
@@ -111,7 +111,7 @@ export function mergeConfig({
         /**
          * 是否打包app，注：发布热更可以不打包app
          */
-        shouldBuildApp: options.shouldBuildApp ?? shouldBuildApp,
+         buildApp: options.buildApp ?? buildApp,
         /**
          * 热更时显示的更新信息
          */
@@ -137,7 +137,7 @@ export async function publishReactNative({
     codePush,
     open,
     shouldCopyApp,
-    shouldBuildApp,
+    buildApp,
     message,
     onComplete
 }: InternalPublishConfig) {
@@ -214,7 +214,7 @@ export async function publishReactNative({
             }
         }
         
-        if (shouldBuildApp) {
+        if (buildApp) {
             await buildApk()
         }
     

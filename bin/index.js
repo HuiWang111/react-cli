@@ -804,7 +804,7 @@ function mergeConfig({
   codePush: codePush2 = false,
   open = false,
   shouldCopyApp = false,
-  shouldBuildApp = true,
+  buildApp = true,
   onComplete
 } = {
   shouldCleanCodeChange: true,
@@ -820,7 +820,7 @@ function mergeConfig({
   codePush: false,
   open: false,
   shouldCopyApp: false,
-  shouldBuildApp: true
+  buildApp: true
 }, options) {
   var _a, _b, _c, _d, _e, _f, _g, _h, _i;
   return {
@@ -837,7 +837,7 @@ function mergeConfig({
     codePush: options.codePush === false ? options.codePush : codePush2,
     open: (_f = options.open) != null ? _f : open,
     shouldCopyApp: (_g = options.shouldCopyApp) != null ? _g : shouldCopyApp,
-    shouldBuildApp: (_h = options.shouldBuildApp) != null ? _h : shouldBuildApp,
+    buildApp: (_h = options.buildApp) != null ? _h : buildApp,
     message: (_i = options.m) != null ? _i : "",
     onComplete
   };
@@ -856,7 +856,7 @@ async function publishReactNative({
   codePush: codePush2,
   open,
   shouldCopyApp,
-  shouldBuildApp,
+  buildApp,
   message,
   onComplete
 }) {
@@ -916,7 +916,7 @@ async function publishReactNative({
         await writeAppName(appName, toReplaceAppName);
       }
     }
-    if (shouldBuildApp) {
+    if (buildApp) {
       await buildApk();
     }
     if (shouldCopyApp) {
