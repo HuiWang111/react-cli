@@ -918,12 +918,12 @@ async function publishReactNative({
     }
     if (buildApp) {
       await buildApk();
-    }
-    if (shouldCopyApp) {
-      await copyApp(isTest);
-    }
-    if (open) {
-      await openApkDir();
+      if (shouldCopyApp) {
+        await copyApp(isTest);
+      }
+      if (open) {
+        await openApkDir();
+      }
     }
     if (codePush2) {
       const {
