@@ -47,6 +47,7 @@ export interface PublishConfig {
     codePush: false | CodePushOptions;
     open?: boolean;
     shouldCopyApp?: boolean;
+    buildApp?: boolean;
     onComplete?: (mode: PublishMode) => void;
 }
 

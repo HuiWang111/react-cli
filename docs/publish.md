@@ -61,7 +61,11 @@ module.exports = {
             return ...
         }
     },
-    shouldCopyApp: true
+    shouldCopyApp: true,
+    /**
+     * 发布热更可以不进行打包，因此仅js代码的变更可以通过该配置项跳过打包步骤
+     */
+    buildApp: false
 }
 ```
 
@@ -70,7 +74,7 @@ module.exports = {
 "scripts": {
     // ...
     "build": "sre publish react-native --no-codePush --open",
-    "publish": "sre publish react-native"
+    "publish": "sre publish react-native --no-buildApp"
 },
 ```
 
@@ -211,6 +215,10 @@ interface CodePushOptions {
 ### shouldCopyApp
 打包完成后是否自动复制一个apk文件。
 test模式会复制一个名为 app-release.test.apk，production 模式会复制一个名为 app-release.prod.apk；
+
+### buildApp
+是否进行打包。
+仅js代码的变更，发布热更时可以通过该配置项跳过打包步骤
 
 | type | default | required |
 | ---- | ---- | ---- |
