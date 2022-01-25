@@ -12,10 +12,10 @@ export class NativeView extends View {
 import { View, Text } from 'react-native'
 import { observer } from 'mobx-react-lite'
 import { Button } from 'rn-element'
-import { useAppContext, useMount } from '@/hooks/index'
+import { useServices, useMount } from '@/hooks/index'
 
 export const ${this._fileNameCamel}: FC = observer(() => {
-    const { store, api } = useAppContext()
+    // const {  } = useServices()
     
     useMount(() => {
         // mounted

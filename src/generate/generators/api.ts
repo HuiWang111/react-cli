@@ -13,13 +13,9 @@ export class Api {
 
     private get _templete() {
         return `import { AxiosInstance } from 'axios'
-import { AppStore } from '${this._absolutePath}stores/index'
 
 export class ${upperFirst(toCamelCase(this._fileName))}Api {
-    constructor(
-        private httpClient: AxiosInstance,
-        private store: AppStore
-    ) {}
+    constructor(private httpClient: AxiosInstance) {}
 }
 
 `

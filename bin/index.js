@@ -323,13 +323,9 @@ var Api = class {
   }
   get _templete() {
     return `import { AxiosInstance } from 'axios'
-import { AppStore } from '${this._absolutePath}stores/index'
 
 export class ${upperFirst(toCamelCase(this._fileName))}Api {
-    constructor(
-        private httpClient: AxiosInstance,
-        private store: AppStore
-    ) {}
+    constructor(private httpClient: AxiosInstance) {}
 }
 
 `;
@@ -451,12 +447,11 @@ var Style = class extends SelectDirectory {
   get _templete() {
     return `import { StyleSheet, Dimensions } from 'react-native'
 
-const { height, width } = Dimensions.get('window')
+const { width } = Dimensions.get('window')
 
 export const styles = StyleSheet.create({
     container: {
-        width,
-        height
+        flex: 1
     }
 })
 `;
@@ -492,10 +487,10 @@ var DOMView = class extends View {
   get _templete() {
     return `import { FC } from 'react'
 import { observer } from 'mobx-react-lite'
-import { useAppContext, useMount } from 'hooks'
+import { useServices, useMount } from 'hooks'
 
 export const ${this._fileNameCamel}: FC = observer(() => {
-    const { store, api } = useAppContext()
+    // const {  } = useServices()
     
     useMount(() => {
         // mounted
@@ -531,10 +526,10 @@ var NativeView = class extends View {
 import { View, Text } from 'react-native'
 import { observer } from 'mobx-react-lite'
 import { Button } from 'rn-element'
-import { useAppContext, useMount } from '@/hooks/index'
+import { useServices, useMount } from '@/hooks/index'
 
 export const ${this._fileNameCamel}: FC = observer(() => {
-    const { store, api } = useAppContext()
+    // const {  } = useServices()
     
     useMount(() => {
         // mounted
