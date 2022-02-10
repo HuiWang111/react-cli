@@ -656,7 +656,7 @@ function buildApk() {
   });
 }
 function fill(n) {
-  return n > 10 ? "" + n : "0" + n;
+  return n > 9 ? "" + n : "0" + n;
 }
 function getYMD() {
   const date = new Date();
