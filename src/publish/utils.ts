@@ -24,7 +24,7 @@ export function buildApk(): Promise<void> {
 }
 
 function fill(n: number): string {
-    return n > 10 ? '' + n : '0' + n
+    return n > 9 ? '' + n : '0' + n
 }
 
 export function getYMD() {
